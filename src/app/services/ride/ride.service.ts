@@ -344,7 +344,7 @@ export class RideService {
   async checkRideStatus() {
     console.log('ride status check.....');
     const rideId = this.rideInfo.id;
-    this.api.getRide(rideId).subscribe((ride: Ride) => {
+    this.api.getRide(rideId).subscribe(async (ride: Ride) => {
       if (this.rideAlert && (ride['user_rejected'] || ride['request_timeout'])) {
         console.log('CONDITION1');
         this.clearRideInfo();
@@ -353,6 +353,9 @@ export class RideService {
         console.log('CONDITION2');
         this.showUserRejectedAlert();
       } else {
+        
+        await this.getcurrentLocations();
+        
         console.log('waiting for response from user');
       }
     });
