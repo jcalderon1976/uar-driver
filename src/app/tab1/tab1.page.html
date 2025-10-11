@@ -1,0 +1,157 @@
+<ion-header>
+  <ion-toolbar #toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title color="light" class="uar-title" *ngIf="!driverAvailable">
+      Offline
+    </ion-title>
+    <ion-title  color="light" class="uar-title" *ngIf="driverAvailable">
+      Online
+    </ion-title>
+    <ion-toggle slot="end" [(ngModel)]="driverAvailable" (ionChange)="driverStatusChange($event)" class="custom-toggle"  [disabled]="rideStage.rideAccepted">
+    </ion-toggle>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content slot="fixed">
+  <div *ngIf="!driverAvailable">
+    <ion-item color="light" >
+      <ion-avatar slot="start" class="nightModeIcon">
+        <img src="assets/images/nightMode.png" />
+      </ion-avatar>
+      <ion-label class="textBold">You are Offline</ion-label>
+    </ion-item>
+  </div>
+
+  
+  
+    <google-map   #googleMap height="80%" width="100%" [center]="rideService.center" [options]="rideService.options"   (mapInitialized)="onMapReady($event)">
+            <!-- Marker en el centro -->
+            <map-marker ></map-marker>
+
+            @if (rideService.directionsResults$ | async; as directionsResults) { <map-directions-renderer [directions]="directionsResults"   />  }
+    </google-map>   
+  
+</ion-content>
+
+<ion-footer *ngIf="!rideStage.rideAccepted">
+  <div class="driverCardBottom">
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="driverlocationIcon" color="dark"
+      (click)="rideService.getcurrentLocations()">
+      <ion-fab-button>
+        <ion-icon name="locate" class="locationIcon"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+
+    <ion-card   slot="fixed" class="driverCard fixed ion-no-padding ion-no-margin">
+      <ion-item lines="none">
+        <ion-avatar slot="start" class="avaorDriver">
+          <img [src]="loggedInUser.profile_img || 'assets/images/userDefault.png'" />
+        </ion-avatar>
+        <ion-label class="ion-text-capitalize"> <b>{{loggedInUser.name}}</b></ion-label>
+        <span fill="outline" slot="end"> <b>$ {{rideService.stats.totalFare || 0}}</b></span>
+      </ion-item>
+
+      <ion-card-content color="primary" class="ion-no-margin">
+        <div class="cardContent">
+          <div class="driverDetails">
+            <ion-icon name="time" class="driverStatusIcons"></ion-icon>
+            <ion-label class="textColor textBold detailsLabel">{{rideService.stats.hoursOnline || 0}}</ion-label>
+            <p class="detailText ion-text-uppercase">Hours Online</p>
+          </div>
+          <div class="driverDetails">
+            <ion-icon name="speedometer" class="driverStatusIcons"></ion-icon>
+            <ion-label class="textColor textBold detailsLabel ion-text-uppercase">
+              {{rideService.stats.totalDistance || 0}} KM</ion-label>
+            <p class="detailText ion-text-uppercase">Total Distance</p>
+          </div>
+          <div class="driverDetails">
+            <ion-icon name="time" class="driverStatusIcons"></ion-icon>
+            <ion-label class="textColor textBold detailsLabel">{{rideService.stats.totalRides || 0}}</ion-label>
+            <p class="detailText ion-text-uppercase">Total Jobs</p>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-footer>
+
+<ion-footer *ngIf="rideStage.rideAccepted">
+  <div class="relative">
+   
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="userlocationIcon ion-padding-bottom" color="dark"
+      (click)="rideService.getcurrentLocations()">
+      <ion-fab-button>
+        <ion-icon name="locate" class="locationIcon"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+    <ion-card slot="fixed" class="userCard ion-no-margin ion-no-padding">
+      <ion-card-content class="ion-no-padding card-clients">
+        <ion-grid class="ion-no-padding">
+          <ion-row class="ion-align-items-center">
+    
+            <!-- Avatar -->
+            <ion-col size="auto" class="ion-padding-start">
+              <ion-avatar class="avatar">
+                <img [src]="rideService.rideUser.profile_img || '../../assets/images/userDefault.png'" />
+              </ion-avatar>
+            </ion-col>
+    
+            <!-- Nombre, tarifa y distancia -->
+            <ion-col>
+              <div class="user-name">
+                {{ rideService.rideUser.name }}
+              </div>
+              <div class="fare-distance">
+                <span class="fare">${{ rideService.rideInfo.totalFare| number:'1.2-2' }}</span>
+                <span class="dot">•</span>
+                <span class="distance">{{ rideService.rideInfo.distance }} Km</span>
+              </div>
+            </ion-col>
+    
+            <!-- Botón Detail -->
+            <ion-col size="auto" class="ion-padding-end">
+              <ion-button fill="outline" color="success" size="small" class="detail-btn" (click)="goToCustomerDetail()">
+                Detail
+              </ion-button>
+            </ion-col>
+    
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+   
+    
+    
+    
+   
+      <ion-card-content color="light" class="userCard-conetnt ion-no-margin" style="padding-top: 0px;">
+        <div class="borderBottom paddingVertical" style="padding-top: 0px;">
+          <div class="detailText fontSmall ion-text-uppercase">Pick Up</div>
+          <ion-label class="detailsLabel textColor textBold" style="font-size: 14px" > {{rideService.mapData.originAddress}}</ion-label>
+        </div>
+
+        <div class="borderBottom paddingVertical" style="padding-top: 0px;">
+          <div class="detailText fontSmall ion-text-uppercase">Drop Off</div>
+          <ion-label class="detailsLabel  textColor textBold" style="font-size: 14px"> {{ rideService.mapData.destinationAddress }} </ion-label>
+        </div>
+
+        <div>
+          <div class="userCardFooter">
+            
+            <ion-button *ngIf="rideStage.rideAccepted && !rideStage.startedPickupNavigation" expand="block"  fill="solid" class ="input-button-Cancel"   
+            (click)="cancelRide()"> Cancel  </ion-button>
+          
+            <ion-button *ngIf="rideStage.rideAccepted && !rideStage.startedPickupNavigation" expand="block"  fill="solid" class ="continue-button"   
+             (click)="rideService.startNavigationToPickup()"> Go to Pickup </ion-button>
+            <ion-button *ngIf="rideStage.startedPickupNavigation && !rideStage.rideStarted"expand="block"  fill="solid" class ="continue-button"   
+             (click)="rideService.startRide()"> Start Ride </ion-button>
+            <ion-button *ngIf="rideStage.rideStarted"expand="block"  fill="solid" class ="continue-button"   
+              (click)="rideService.completeRide()"> Complete Ride </ion-button>
+
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-footer>

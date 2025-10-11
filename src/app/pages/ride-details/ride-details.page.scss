@@ -1,0 +1,43 @@
+
+
+app-map {
+    height: 200px;
+  }
+  
+  .contentHead {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .item-native {
+    --padding: 0;
+  }
+  .instruction {
+    display: block;
+    text-align: center;
+    font-size: 13px;
+  }
+  .unwrapped {
+    white-space: normal;
+    overflow: hidden;
+  }
+  .map{
+    padding: 30px;
+  }
+
+  .googleMap{
+    height: 42%;
+    width: 100%;
+  }
+
+
+  ion-toolbar.gradient-header::part(native) {
+    background: linear-gradient(45deg, #FE695D, #AA2CE6) !important;
+    color: white !important;
+  }
+  
+  ion-title {
+    color: white !important;
+    font-weight: bold;
+    text-align: center;
+  }

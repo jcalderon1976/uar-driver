@@ -1,0 +1,28 @@
+
+
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { CustomerDetailPage } from './customer-detail.page';
+
+describe('CustomerDetailPage', () => {
+  let component: CustomerDetailPage;
+  let fixture: ComponentFixture<CustomerDetailPage>;
+
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [CustomerDetailPage],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    })
+      .compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(CustomerDetailPage);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

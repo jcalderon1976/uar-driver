@@ -1,0 +1,101 @@
+
+<ion-header >
+  <ion-toolbar #toolbar>
+    <ion-title color="light" class="uar-title">H I S T O R I A</ion-title>
+  </ion-toolbar>
+
+  <ion-grid class="ion-padding-vertical">
+    <ion-row>
+      <div class="week_days">
+        <div *ngFor="let week of monthDays; let i = index"
+          [ngClass]="selected == i ? 'weekdays_col' : 'defaultClass'" (click)="weekChecked(week)">
+          <ion-label class="ion-text-center">
+            <h6 [ngClass]="selected == i ? 'header_Para_selected' : 'header_Para'"  >{{ week.day }}</h6>
+            <h6 [ngClass]="selected == i ? 'header_Para_selected' : 'header_Para'"  >{{ week.date }}</h6>
+          </ion-label>
+        </div>
+      </div>
+    </ion-row>
+  </ion-grid>
+</ion-header>
+
+<ion-content class="tab2Header">
+   
+  <ion-row class="ion-padding-vertical">
+    <ion-col size="6">
+      <ion-card class="car_card">
+        <ion-item class="car-item">
+          <ion-thumbnail slot="start" class="card_jobEarn">
+            <ion-img  src="assets/images/cab.png"></ion-img>
+          </ion-thumbnail>
+          <ion-label>
+            <p style="color:white;">Total Jobs</p>
+            <h2 *ngIf="rides && rides.length">{{ rides.length}}</h2>
+            <h2 *ngIf="!rides || !rides.length">0</h2>
+          </ion-label>
+        </ion-item>
+      </ion-card>
+    </ion-col>
+    <ion-col size="6">
+      <ion-card class="usd_card">
+        <ion-item class="usd_item">
+          <ion-thumbnail slot="start" class="card_jobEarn">
+            <ion-img    src="assets/images/badge.png"></ion-img>
+          </ion-thumbnail>
+          <ion-label>
+            <p style="color:white;">Earned</p>
+            <h2>${{totalEarning}}</h2>
+          </ion-label>
+        </ion-item>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+  
+
+  <ion-card *ngIf="rides.length === 0">
+    <ion-card-content>
+      No tienes historial de viajes aún.
+    </ion-card-content>
+  </ion-card>
+  <ion-card *ngFor="let ride of rides" class="ion-no-padding ion-padding-vertical history-card"  (click)="showInfo(ride)">
+     <ion-item class="history-item" lines="none">
+       <ion-grid>
+        <ion-row>
+          <ion-col size="9">
+            <div class="date location-text">
+              <ion-chip color="medium">{{ ride.distance }} km</ion-chip>
+              <ion-icon name="calendar" color="favorite"></ion-icon>
+               <ion-text>
+                 <span *ngIf="ride && ride.createdAt"> {{ ride.createdAt.toDate()  | date }}</span>
+                 <span *ngIf="!ride || !ride.createdAt">Date not available</span>
+               </ion-text> 
+             </div>
+          </ion-col>
+          <ion-col size="3">
+            <div class="price" > $ {{ ride.fare }}   </div>
+          </ion-col>
+       </ion-row>
+
+       <ion-row>
+        <ion-col size="1"><ion-icon name="chevron-down-circle" color="favorite" ></ion-icon>&nbsp;</ion-col>
+        <ion-col size="11"><ion-text class="location-text" color="dark">     {{ ride.origin_address }}</ion-text></ion-col>
+       </ion-row>
+
+       <ion-row>
+        <ion-col size="1"><ion-icon name="chevron-up-circle"  color="success" ></ion-icon>&nbsp;</ion-col>
+        <ion-col size="11"><ion-text class="location-text" color="dark">    {{ ride.destination_address }}</ion-text></ion-col>
+       </ion-row>
+
+      </ion-grid> 
+    </ion-item>
+  </ion-card>
+  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMore($event)">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>
+<ion-footer class="myFooter" >
+  <ion-col>
+    <ion-button expand="block"  fill="solid" class ="continue-button"   (click)="AllJobs()">Todos los viajes</ion-button>
+  </ion-col>
+</ion-footer>

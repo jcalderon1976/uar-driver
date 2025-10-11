@@ -1,0 +1,76 @@
+<ion-header>
+  <ion-toolbar #toolbar>
+    <ion-buttons slot="start"  (click)="goBack()" >
+           <ion-icon color="light" name="close"></ion-icon>
+    </ion-buttons>   
+    <ion-title color="light"> Método de Pago</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <br/><br/>
+  <div class="first-div">
+    <ion-row class="ion-justify-content-center">
+        <h5 class="h2-class">Precio Total: ${{totalFare }} </h5>
+     </ion-row>
+    <ion-row class="ion-justify-content-center">
+         <p class="h2-class ion-no-margin ion-text-uppercase">Tiempo del Viaje Aproximado es: {{tripTime}}</p>
+    </ion-row>
+  </div>
+  <ion-content>
+    <ion-card *ngIf="!paymentMethodsList || paymentMethodsList.length===0">
+      <ion-card-content>
+        <ion-text>
+          No tienes ningun metodo de pago añadido. Puedes añadir más de una y seleccionar con cuál pagar.
+        </ion-text>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-grid>
+      <div class="swiper mySwiper" #swiperContainer>
+        <div class="swiper-wrapper">
+          <div class="swiper-slide" *ngFor="let card of paymentMethodsList; let i = index">
+            <ion-card
+              [ngClass]="card.DefaultPaymentMethod ? 'default-card-shadow' : 'normal-card-shadow'"
+              class="credit-card"
+              [button]="true"
+              (click)="cardEvent(card, i)"
+              [class.selected]="card.DefaultPaymentMethod"
+            >
+              <div class="overlay"></div>
+              <ion-card-content>
+                <div class="card-top">
+                  <div class="chip"></div>
+                  <div class="bank-name">
+                    <img [src]="getImage(card.paymentMethod)" class="cardImage" />
+                  </div>
+                </div>
+      
+                <div class="card-number">
+                  {{ maskCardNumber2(card.cardNumber) }}
+                </div>
+      
+                <div class="card-details">
+                  <div class="expiry">
+                    <small>VALID THRU</small> {{ card.ExpireDate }}
+                  </div>
+                  <img *ngIf="card.DefaultPaymentMethod" [src]="checkmarkImg" class="default_checkmark" />
+                </div>
+                <div class="cardholder">{{ card.clientName.toUpperCase() }}</div>
+              </ion-card-content>
+            </ion-card>
+          </div>
+        </div>
+        <div class="swiper-pagination"></div>
+      </div>
+      
+    </ion-grid> 
+
+  </ion-content>
+
+</ion-content>
+
+
+<ion-footer class="ion-padding">
+ <ion-button color="favorite" (click)="addNewMethod()" fill="outline"    expand="block"> Añada Metodo De Pago Nuevo</ion-button>
+</ion-footer>

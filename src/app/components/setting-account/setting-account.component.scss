@@ -1,0 +1,72 @@
+
+
+
+ion-fab-button{
+    position: relative;
+    left: 225px;
+     top:-50px;
+    height: 40px;
+    width: 40px;
+}
+ion-icon{
+    height: 27px;
+    width: 27px;  
+}
+
+
+
+.cPassWord{
+    width: 500px;
+    border-width: 0px;
+}
+
+
+.avatar-container {
+    
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto; // centra horizontalmente
+  }
+  
+  .big-avatar {
+    width: 100%;
+    height: 100%;
+    border: 8px solid #fffafa;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .big-avatar img {
+    object-fit: cover;
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .camera-button {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    transform: translate(0%, 30%);
+    z-index: 10;
+  
+    width: 44px;
+    height: 44px;
+    --border-radius: 50%;
+    --padding-start: 0;
+    --padding-end: 0;
+    --padding-top: 0;
+    --padding-bottom: 0;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  
+  .button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40px; // o lo que necesites
+  }

@@ -1,0 +1,55 @@
+
+<ion-header >
+  <ion-toolbar #toolbar>
+    <ion-buttons slot="end" (click)="goBack()">
+      <ion-icon slot="icon-only" name="close"></ion-icon>
+    </ion-buttons>
+    <ion-title color="light">Request Ride</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content >
+  
+  <div class="googleMap">
+    <google-map  height="100%" width="100%" [center]="center" [options]="options" >
+            @if (directionsResults$ | async; as directionsResults) { <map-directions-renderer [directions]="directionsResults"   />  }
+    </google-map>   
+  </div>
+  <ion-card>
+        
+        <ion-card-header>
+          <ion-card-title>Informacion del Viaje</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <br/>
+          <div class="contentHead">
+            <span *ngIf="rideInfo && rideInfo.createdAt"> {{ rideInfo.createdAt.toDate()  | date   }}</span>
+            <span *ngIf="!rideInfo || !rideInfo.createdAt">Date not available</span>
+            <span>$ {{ rideInfo.totalFare}}</span>
+          </div>
+          <br/>
+          <div class="contentBody">
+            <ion-list>
+              <ion-item>
+                <ion-label class="unwrapped"><strong>Origin: </strong> {{ originAddr }}</ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-label class="unwrapped"><strong>Destination: </strong> {{ destinationAddr }}</ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-label><strong>Driver: </strong> {{ driver }}</ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-label><strong>Customer: </strong> {{ customer }}</ion-label>
+              </ion-item>
+            </ion-list>
+          </div>
+        </ion-card-content>
+  </ion-card>
+
+</ion-content>
+<ion-footer class="myFooter" >
+  <ion-col>
+    <ion-button expand="block" fill="solid" class ="continue-button" (click)="goBack()">Close</ion-button>
+  </ion-col>
+</ion-footer>

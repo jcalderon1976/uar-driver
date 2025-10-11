@@ -1,0 +1,103 @@
+<ion-header>
+  <ion-toolbar  #toolbar>
+    <ion-buttons slot="start"  (click)="goBack()" >
+        <ion-icon color="light" name="close"></ion-icon>
+    </ion-buttons>
+    <ion-title color="light" class="uar-title">U A R </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="add-payment-div contentSection" *ngIf="cardDetails">
+    <ion-list-header style="height:20px"> 
+      <ion-label >  Editar Tarjeta De Credito </ion-label>
+    </ion-list-header>
+
+    <ion-grid class="ion-padding-horizontal" >
+      <ion-row >
+        <ion-col>
+          <div class="center-card">
+          <ion-card  class="credit-card" >
+            <ion-card-content>
+              <div class="card-top">
+                <div class="chip"></div>
+                <div class="bank-name">  <img [src]= "getImage(cardDetails.paymentMethod)" class="cardImage">    </div>
+              </div>
+          
+              <div class="card-number">  {{ cardDetails.cardNumber }}  </div>
+          
+              <div class="card-details">
+                  <div class="expiry"><small>VALID THRU</small> {{ cardDetails.ExpireDate }}</div>
+              </div>
+              <div class="cardholder">{{ cardDetails.clientName.toUpperCase() }} </div>
+            </ion-card-content>
+          </ion-card>
+        </div>
+        </ion-col>
+      </ion-row>
+        <ion-row>
+        <ion-col>
+          <ion-input #mameInput class="gradient-input ion-padding-horizontal gradient-input" placeholder="Name" [(ngModel)]="cardDetails.clientName"
+          label="Name" label-placement="floating" fill="solid"  required
+          [class.input-error]="nameError"  [clearInput]="true"  (keydown.enter)="focusNext(cardInput)" (keydown.tab)="focusNext(cardInput)" ></ion-input>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+             <ion-input #cardInput class="gradient-input ion-padding-horizontal"   placeholder="0000 0000 0000 0000"  inputmode="numeric" [(ngModel)]="cardDetails.cardNumber"
+                label="Numero de Tarjeta" label-placement="floating" fill="solid" name="cardNumber"   maxlength="19" required
+                [ngClass]="{'input-error': cardError}"  [clearInput]="true"   
+                (ionInput)="formatCardNumber($event)" (keydown.enter)="focusNext(codigoSeguridad)" (keydown.tab)="focusNext(codigoSeguridad)" > </ion-input>
+         </ion-col>
+      </ion-row>
+      
+      <ion-row>
+        <ion-col>
+           <ion-input #codigoSeguridad class="gradient-input ion-padding-horizontal"  placeholder="CVV" inputmode="numeric" [(ngModel)]="cardDetails.SecurityCode"
+                label="Codigo de Seguridad(CVV)" label-placement="floating" fill="solid" name="codigoSeguridad"   maxlength="4" required
+                [ngClass]="{'input-error': cvvError}"  [clearInput]="true"   
+                (ionInput)="formatCVVNumber($event)" (keydown.enter)="focusNext(fechaExpiracion)" (keydown.tab)="focusNext(fechaExpiracion)"> </ion-input>
+        </ion-col>
+        <ion-col>
+          <ion-input #fechaExpiracion class="gradient-input  ut ion-padding-horizontal" placeholder="MM/YY" inputmode="numeric" [(ngModel)]="cardDetails.ExpireDate"
+          label="Fecha de expiracion" label-placement="floating" fill="solid" name="FechaExpiracion"   maxlength="5" required
+          [ngClass]="{'input-error': expiryError}"  [clearInput]="true"   
+          (ionInput)="formatExpiryNumber($event)" (keydown.enter)="focusNext(DefaultPaymentMethod)" (keydown.tab)="focusNext(DefaultPaymentMethod)">  </ion-input>
+        </ion-col>
+      </ion-row>
+     
+      <ion-row>
+        <ion-col>
+          <ion-checkbox #DefaultPaymentMethod [(ngModel)]="cardDetails.DefaultPaymentMethod"   >Metodo de pago por Defecto </ion-checkbox>
+        </ion-col>
+      </ion-row>
+
+       <ion-row>
+        <ion-col class="lockSection">
+          <div>
+            <ion-icon name="lock-closed" class="icon" class="lockIcon"></ion-icon>
+          </div>
+          <div class="secureTextSection">
+            <h5 class="label ion-no-margin">Secure Payment</h5>
+            <h6 class="small ion-no-margin">Trusted by over 500 million shoppers in 50 countries</h6>
+          </div>
+        </ion-col>
+      </ion-row> 
+          
+      
+    </ion-grid>
+  </div>
+</ion-content>
+<ion-footer class="myFooter" >
+  <ion-row>
+    <ion-col class="ion-padding-horizontal">
+      <ion-button color="favorite" expand="block"  fill="outline" class="delete-button"  (click)="deleteCard()" >Eliminar Tarjeta</ion-button>
+   </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col class="ion-padding-horizontal">
+     <ion-button  expand="block"   fill="solid" class ="continue-button"  (click)="saveCard()" >Guardar Tarjeta</ion-button>
+    </ion-col>
+    
+  </ion-row>
+</ion-footer>

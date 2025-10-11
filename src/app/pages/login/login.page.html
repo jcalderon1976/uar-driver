@@ -1,0 +1,127 @@
+<ion-content fullscreen scroll-y="false">
+  <br />
+  <br />
+  <ion-label class="custom-label ion-text-center">UAR-DRIVER</ion-label>
+  <br />
+  <br />
+  <div class="divInput">
+    <ion-input
+      #emailInput
+      [(ngModel)]="user.email"
+      type="email"
+      placeholder=""
+      label="Email"
+      label-placement="floating"
+      fill="solid"
+      class="gradient-input"
+      [class.input-error]="emailError"
+      [clearInput]="true"
+      (keydown.enter)="focusNext(passwordInput)"
+      (keydown.tab)="focusNext(passwordInput)"
+    >
+    </ion-input>
+    <ion-input
+      #passwordInput
+      [(ngModel)]="user.password"
+      type="password"
+      placeholder=""
+      label="Password"
+      label-placement="floating"
+      fill="solid"
+      class="gradient-input"
+      [ngClass]="{'input-error': passwordError}"
+      [clearInput]="true"
+      (keydown.enter)="submitIfValid()"
+      (keydown.tab)="submitIfValid()"
+    ></ion-input>
+  </div>
+
+  <ion-button
+    expand="block"
+    (click)="forgotPassword()"
+    fill="clear"
+    class="content-div"
+    >Forgot Password?</ion-button
+  >
+  <ion-button
+    expand="block"
+    (click)="login()"
+    fill="solid"
+    class="continue-button"
+    >Continue</ion-button
+  >
+  <ion-button
+    expand="block"
+    (click)="goToRegister()"
+    fill="clear"
+    class="content-div"
+    >Don't have an account? <b style="color: #aa2ce6"> Sign up</b></ion-button
+  >
+
+  <ion-grid>
+    <ion-row>
+      <ion-col><hr class="divider" /> </ion-col>
+      <ion-col size="auto" style="color: #000"> OR </ion-col>
+      <ion-col><hr class="divider" /> </ion-col> </ion-row
+  ></ion-grid>
+  <br />
+  <div class="divInput">
+    <ion-button
+      expand="block"
+      (click)="loginWithGoogle()"
+      fill="clear"
+      class="provider-button gradient-input align-left"
+    >
+      <div class="button-content">
+        <img
+          slot="start"
+          src="../../../assets/icons/google-logo.png"
+          class="provider-icon"
+        />
+        <span class="button-text">Continue with Google</span>
+      </div>
+    </ion-button>
+
+    <ion-button
+      expand="block"
+      (click)="loginWithMicrosoft()"
+      fill="clear"
+      class="provider-button gradient-input align-left"
+    >
+      <div class="button-content">
+        <img
+          slot="start"
+          src="../../../assets/icons/microsoft-logo.png"
+          class="provider-icon"
+        />
+        <span class="button-text">Continue with Microsoft Account</span>
+      </div>
+    </ion-button>
+
+    <ion-button
+      expand="block"
+      (click)="loginWithApple()"
+      fill="clear"
+      class="provider-button gradient-input align-left"
+      [disabled]="true"
+    >
+      <div class="button-content">
+        <ion-icon
+          color="dark"
+          slot="start"
+          name="logo-apple"
+          class="small-icon"
+        ></ion-icon>
+        <span class="button-text">Continue with Apple</span>
+      </div>
+    </ion-button>
+  </div>
+
+  <div *ngIf="!showText" class="lottie-container">
+    <ng-lottie
+      [options]="lottieConfig"
+      [styles]="{ width: '100%', height: '100%' }"
+      (animationCreated)="animationCreated($event)">
+    </ng-lottie>
+</div>
+</ion-content>

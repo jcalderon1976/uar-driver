@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar  #toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title color="light" class="uar-title">Documentos Req </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card *ngFor="let item of documents" (click)="gotoPage(item.url)">
+    <ion-item>
+      <ion-thumbnail class="ion-thumbnail">
+        <ion-icon name="{{item.icon}}" expand="icon-only" class="icon-thumbnail"></ion-icon>
+      </ion-thumbnail>
+      <ion-label>
+        <div class="div1">123</div>
+        <div class="div2">456</div>
+        <div class="div3">789</div>
+      </ion-label>
+    </ion-item>
+    <div class="card-bottom-item">
+      <h2>{{item.name}}</h2>
+    </div>
+  </ion-card>
+  
+</ion-content>
+
+<ion-footer class="myFooter" >
+  <ion-col>
+    <ion-button expand="block"  fill="solid" (click)="goBack()"   class ="continue-button">Guardar Cambios</ion-button>
+  </ion-col>
+</ion-footer>

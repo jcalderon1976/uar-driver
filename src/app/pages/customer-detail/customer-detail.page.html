@@ -1,0 +1,91 @@
+<ion-header>
+  <ion-toolbar #toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Ride #{{rideService.rideInfo.id}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content slot="fixed">
+  <div class="googleMap">
+    <google-map  height="100%" width="100%" [center]="center" [options]="options" >
+            @if (directionsResults$ | async; as directionsResults) { <map-directions-renderer [directions]="directionsResults"   />  }
+    </google-map>   
+  </div>
+  <ion-card class="userCard ion-no-margin" *ngIf="rideService.rideUser.id">
+
+
+
+
+    <ion-card-header color="light" class="userCardHeader dFlex">
+              <ion-item lines="none">
+                <ion-avatar slot="start" class="avatarDriver">
+                  <img [src]="rideService.rideUser.profile_img" />
+                </ion-avatar>
+                <ion-label class="ion-text-capitalize"> <b>{{rideService.rideUser.name}}</b></ion-label>
+                <span fill="outline" slot="end"> <b>$ {{rideService.rideInfo.totalFare || 0}} * {{rideService.rideInfo.distance || 0}} KM</b></span>
+              </ion-item>
+    </ion-card-header>
+
+    <ion-card-content color="light" class="ion-no-margin">
+      <div class="borderBottom paddingVertical">
+        <div class="detailText fontSmall" class="ion-text-uppercase">Pick Up</div>
+        <ion-label class="detailsLabel textColor textBold">
+          {{mapData.originAddress}}
+        </ion-label>
+      </div>
+
+      <div class="borderBottom paddingVertical">
+        <div class="detailText fontSmall" class="ion-text-uppercase">Drop Off</div>
+        <ion-label class="detailsLabel  textColor textBold">
+          {{mapData.destinationAddress}}
+        </ion-label>
+      </div>
+
+      <div class="borderBottom paddingVertical">
+        <div class="detailText fontSmall ion-text-uppercase">Note</div>
+        <ion-label class="detailsLabel  textColor textBold"> </ion-label>
+      </div>
+      <div class="borderBottom paddingVertical">
+        <div class="detailText fontSmall ion-text-uppercase">Trip Fare</div>
+
+        <ion-list class="ion-no-padding ion-no-margin">
+          <ion-item lines="none" *ngFor="let trip of tripPayments" class="tripItems">
+            <h6 slot="start" class="detailsLabel  textColor textBold ion-no-padding ion-no-margin">{{trip.title}}</h6>
+            <span slot="end" class="textBold">${{trip.pay}}</span>
+          </ion-item>
+        </ion-list>
+      </div>
+
+      <div>
+        <ion-row>
+          <ion-col>
+            <ion-button class="detailsBtn userCall" (click)="callUser(rideService.rideUser.phone)">
+              <div class="contactDetails ion-padding">
+                <ion-icon name="call" class="contactIcon"></ion-icon>
+                <span class="textBold textWhite contactTextSize">Call</span>
+              </div>
+            </ion-button>
+          </ion-col>
+
+          <ion-col>
+            <ion-button class="detailsBtn userMsg" (click)="chatWithUser()" disabled="true">
+              <div class="contactDetails ion-padding">
+                <ion-icon name="chatbubbles" class="contactIcon"></ion-icon>
+                <span class="textBold textWhite contactTextSize">Message</span>
+              </div>
+            </ion-button>
+          </ion-col>
+ 
+        </ion-row>
+      </div>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+
+<ion-footer class="myFooter" >
+  <ion-col>
+    <ion-button expand="block" fill="solid" class ="continue-button" (click)="goBack()">Close</ion-button>
+  </ion-col>
+</ion-footer>

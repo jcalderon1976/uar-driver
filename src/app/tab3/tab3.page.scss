@@ -1,0 +1,103 @@
+
+ion-footer{
+  padding: 10px;
+}
+
+.setting-title{
+    font-size: 20px;
+    font-weight: bold;
+    color: #515151;
+    margin-top: 10px;
+}
+
+ion-item {
+
+    margin-top: 10px;
+}
+
+.ion-margin-top{
+      height: 100%;
+      
+}
+
+.Name{
+  font-size: 24px !important;
+  font-weight: bold !important;
+  color: #515151 !important; 
+  font-family: 'Montserrat', sans-serif !important;
+  text-align: center !important;
+}
+
+.Title{
+  font-size: 22px !important;
+  font-weight: bold !important;
+  color: #515151 !important; 
+  font-family: 'Montserrat', sans-serif !important;
+}
+
+ion-content{
+  font-size: 20px !important;
+  color: #515151 !important; 
+  font-family: 'Montserrat', sans-serif !important;
+}
+
+ion-label{
+  font-size: 20px !important;
+}
+
+.cash_Detail {
+  color: white !important;
+  background: linear-gradient(90deg, #FE695D, #AA2CE6) !important;
+  padding-top: 26px;
+  padding-bottom: 26px;
+  display: flex;
+  justify-content: center;
+}
+
+ion-item.no_borderbottom {
+  --inner-border-width: 0 0 0px 0;
+  width: 100% !important;
+}
+.sc-ion-segment-md-h {
+  --color-checked: black !important;
+  --color-checked-disabled: var(--color-checked);
+  --indicator-color-checked: black !important;
+}
+.wallet_card {
+  height: 90px;
+  position: absolute;
+  top: 180px;
+  display: flex;
+  background: white;
+  z-index: 111;
+  width: calc(100% - 30px);
+  border-radius: 8px;
+  box-shadow: 0 5px 3px -2px rgba(0, 0, 0, 0.2), 0 4px 4px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+}
+.list_paddintTop {
+  padding-top: 4em;
+}
+h2 {
+  font-size: 19px;
+  font-weight: bold;
+}
+
+ion-avatar.abs_avatar {
+  width: 49px !important;
+  height: 49px !important;
+}
+.amount_wallet {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.font_sizeh1 {
+  font-size: 45px;
+  font-weight: bold;
+}
+.abs_avater {
+  background: var(--ion-color-warning);
+}
+.card-padding-vertical {
+  padding: 10px 0;
+}

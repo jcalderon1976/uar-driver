@@ -1,0 +1,72 @@
+
+.sc-ion-buttons-md-h.ion-color.sc-ion-buttons-md-s .button,
+.ion-color .sc-ion-buttons-md-h.sc-ion-buttons-md-s .button {
+  --color: white !important;
+  --color-activated: initial;
+}
+.cab-bg {
+  background: linear-gradient(45deg, #FE695D, #AA2CE6) !important;
+}
+.text-color {
+  color: white;
+}
+.map-card {
+  position: absolute;
+  top: 3%;
+  background: white;
+  z-index: 999;
+  width: calc(100% - 5%);
+}
+.vertical-dash {
+  height: 22px !important;
+  width: 74%;
+  border-style: dashed;
+  display: flex;
+  border-left: dashed 1px;
+  border-right: none;
+  border-top: none;
+  border-bottom: none;
+  margin-left: 8px;
+}
+.icon-drop {
+  font-size: 18px;
+  color: green;
+}
+.icon-pin {
+  font-size: 18px;
+  color: var(--ion-color-favorite);
+}
+.horizontal-line {
+  border-bottom: solid 2px #66666661;
+}
+ion-label {
+  margin: 3px 3px 3px 0px !important;
+}
+ion-card {
+  box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12) !important;
+}
+p {
+  margin: 0 0 2px;
+  font-size: 14px;
+  line-height: 35px;
+  text-overflow: inherit;
+  overflow: inherit;
+}
+
+.progress-outer {
+  color: orange !important;
+}
+
+.progress-inner {
+  background-color: white !important;
+}
+
+
+.ion-color-favorite {
+  --ion-color-base: var(--ion-color-favorite);
+  --ion-color-base-rgb: var(--ion-color-favorite-rgb);
+  --ion-color-contrast: var(--ion-color-favorite-contrast);
+  --ion-color-contrast-rgb: var(--ion-color-favorite-contrast-rgb);
+  --ion-color-shade: var(--ion-color-favorite-shade);
+  --ion-color-tint: var(--ion-color-favorite-tint);
+}

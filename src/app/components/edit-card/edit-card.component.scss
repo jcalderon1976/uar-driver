@@ -1,0 +1,95 @@
+
+.input {
+    border: 0.5px solid rgb(210, 210, 210);
+    background-color: rgba(240, 240, 240, 0.5);
+    border-radius: 3px;
+    font-size: 0.9em !important;
+    
+}
+
+.selectCardType{
+    margin-left: 10px;
+}
+
+.default-header {
+    background: #f8f8f8;
+}
+.label {
+    font-size: 12px;
+}
+.small {
+    font-size: 9px;
+    color: rgb(120, 120, 120);
+}
+.icon {
+    font-size: 21px;
+}
+.cards-list {
+    max-height: calc(50vh - 33px);
+    overflow: scroll;
+}
+.bottom {
+    position: absolute;
+    bottom: 10px;
+    width: 90%;
+    left: 50%;
+    transform: translate(-50%, 0%);
+}
+.add-payment-div {
+    margin-bottom: 10px;
+    padding: 10px;
+}
+
+.contentSection {
+    background: #fff;
+}
+
+.cardContentSection {
+    display: flex;
+    align-items: center;
+
+    ion-label {
+        width: 80%;
+    }
+}
+.cardImage {
+    width: 40px;
+}
+
+.lockSection {
+    display: flex;
+    align-items: flex-start;
+}
+
+.lockIcon {
+    font-size: 21px;
+    padding-right: 8px;
+}
+
+.secureTextSection {
+    padding-top: 5px;
+}
+
+
+#cardSelect{
+    margin-left: 20px;
+}
+
+ion-button{
+    margin: 20px;    
+}
+
+on-checkbox {
+    --size: 20px;
+    --checkbox-background-checked: #001941;
+  }
+  
+ion-checkbox::part(container) {
+    border-radius: 6px;
+    border: 2px solid #001941;
+  }
+
+  .center-card {
+    display: flex;
+    justify-content: center;
+  }

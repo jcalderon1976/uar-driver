@@ -1,0 +1,244 @@
+
+.welcome-card ion-img {
+  max-height: 35vh;
+  overflow: hidden;
+}
+.fixed {
+  position: fixed;
+}
+.nowrap {
+  white-space: nowrap;
+}
+agm-map {
+  height: 60vh;
+
+  .gm-svpc {
+    display: none;
+  }
+}
+.gmnoprint {
+  display: none !important;
+}
+.nightModeIcon {
+  border: 3px dotted #000;
+  padding: 3px;
+}
+.driverlocationIcon {
+  bottom: 225px;
+
+  .locationIcon {
+    font-size: 26px;
+  }
+  ion-fab-button {
+    --background: #fff;
+    --color: #000;
+    height: 40px;
+    width: 40px;
+  }
+}
+
+.driverCard {
+  position: absolute;
+  width: 100%;
+  bottom: -7px;
+  background: #fff;
+  border-radius: 11px;
+  padding-bottom: 5%;
+}
+.pickup-Btn {
+  color: #fff;
+  --ion-color-contrast: #fff !important;
+}
+
+
+.nightModeLabel{
+  background: linear-gradient(45deg, #FE695D, #AA2CE6) !important;
+}
+
+.cardContent {
+  background: linear-gradient(45deg, #FE695D, #AA2CE6) !important;
+  display: flex;
+  justify-content: space-around;
+  border-radius: 6px;
+  padding: 3%;
+
+  .driverDetails {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .driverStatusIcons {
+    font-size: 26px;
+    color: white;
+  }
+  .detailText {
+    color: white;
+    font-size: 10px;
+  }
+  .detailsLabel {
+    color: white;
+    font-size: 13px !important;
+  }
+}
+
+.userlocationIcon {
+  bottom: 300px;
+
+  ion-fab-button {
+    --background: #fff;
+    --color: #000;
+    height: 40px;
+    width: 40px;
+  }
+}
+
+.userCard {
+  position: absolute;
+  width: 94%;
+  bottom: 0;
+  background: #fff;
+  border-radius: 11px;
+  padding-bottom: 5%;
+  margin: 10px;
+  animation: mymove 2s;
+
+  .userCardHeader {
+    //box-shadow: 2px 2px 2px #e8e4e4;
+  }
+
+  .userDetails {
+    background: #ffd524;
+    border-radius: 90px;
+    display: flex;
+    height: 21px;
+    padding-left: 12px;
+    padding-right: 14px;
+    padding-top: 3px;
+    padding-bottom: 0;
+  }
+  .userIcon {
+    // width: 40px;
+    // height: 40px;
+    margin: 2%;
+    margin-left: 9%;
+    border: 1px solid #b9b1b1;
+  }
+  // .userCardFooter{
+  //   float: right;
+  // }
+
+  .paddingVertical {
+    padding: 10px 0px;
+  }
+}
+
+.sc-ion-modal-md-h {
+  margin-top: 13%;
+}
+
+.card-Chip {
+  font-size: 11px;
+  --border-radius: 18px;
+  height: 1.8em;
+}
+.requestAll {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.userCard-conetnt {
+  padding-bottom: 0;
+  padding-top: 10px;
+}
+
+@-webkit-keyframes mymove {
+  from {
+    bottom: -200px;
+  }
+  to {
+    bottom: 20px;
+  }
+}
+
+@keyframes mymove {
+  from {
+    bottom: -200px;
+  }
+  to {
+    bottom: 20px;
+  }
+}
+
+
+.map-container {
+ // height: 100vh;
+  height: 60vh;
+  width: 100%;
+}
+
+
+.avaorDriver {
+  width: 60px;
+  height: 60px;
+  margin-top: 15px;
+  border: 1px solid #F9568D;
+}
+
+
+
+
+
+.userCard {
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background-color: #fff;
+}
+
+.avatar img {
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.user-name {
+  font-weight: 600;
+  font-size: 16px;
+  color: #1c1c1e;
+  padding-left: 10px;
+}
+
+.fare-distance {
+  font-size: 18px;
+  margin-top: 4px;
+  color: #6c757d;
+  padding-left: 10px;
+}
+
+.fare {
+  font-weight: 500;
+  color: #28a745;
+  font-size: 18px;
+}
+
+.dot {
+  padding: 0 6px;
+  color: #aaa;
+}
+
+.distance {
+  color: #aaa;
+}
+
+.detail-btn {
+  --border-radius: 10px;
+  height: 32px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.card-clients{
+  margin: 15px;
+}

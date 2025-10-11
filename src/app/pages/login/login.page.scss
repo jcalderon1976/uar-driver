@@ -1,0 +1,50 @@
+ion-content {
+    --background: none; // Remove default background
+    background: url('/assets/images/Home2.png') no-repeat center center / cover;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      //background-color: rgba(252, 247, 247, 0.3); // Dark overlay clearly for contrast
+      z-index: 0;
+    }
+      
+  }
+
+  .lottie-container {
+  
+    position: fixed;    /* flota sobre el contenido */
+    inset: 0;           /* top/right/bottom/left = 0 */
+    width: 100vw;
+    height: 100svh;     /* usa svh para barras dinámicas en móviles */
+    display: grid;
+    place-items: center;
+    z-index: 9999;      /* por encima de todo */
+   // background: #fff;   /* opcional */
+    background-color: none;
+     
+  }
+
+
+    /* Garantiza que el SVG/canvas llene el contenedor */
+  .lottie-container ::ng-deep svg,
+  .lottie-container ::ng-deep canvas {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+
+  ng-lottie {
+    width: 100%;
+    height:100%;
+  }
+
+ 
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
+  }

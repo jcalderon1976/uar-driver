@@ -1,0 +1,100 @@
+agm-map {
+    height: 100%;
+  }
+  
+  .rating {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    margin-top: 8px;
+    flex: 1;
+    .filled {
+      color: gold;
+    }
+    .empty {
+      color: gray;
+    }
+  }
+  
+  .star {
+    font-size: 24px;
+    color: gold;
+  }
+
+  a {
+    color: darkblue;
+  }
+ 
+  .vertical-line {
+    width: 1px;
+    background: gray;
+    height: 56%;
+    margin-right: 12px;
+  }
+
+  .parentMap {
+    height: 50%;
+    position: relative;
+  }
+
+  .image-avatar{
+    height: 100px;
+    width: 100px;
+  }
+
+  .info-row{
+    width: 400px;
+  }
+
+  .info-col1{
+    width: 25%;
+  }
+
+ .driver-name{
+   font-size: 18px;
+   font-weight: bold;
+   text-align: center;
+ }
+  ion-list{
+   
+    //background-color: #f4f4f4;
+    border-top: .5px solid rgba(146, 146, 146, 0.801);
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    box-shadow: rgba(0,0,0,0) 0px 0 8px
+  }
+
+  ion-col{
+    margin-left: 15px;
+    font-size: 20px;
+  }
+  .duration-fab {
+    width: 80px;
+    height: 80px;
+    font-size: 18px;
+    --border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color:#FE695D;
+  }
+  .driver-info-grid {
+    padding: 10px 0;
+  }
+
+  .ion-padding-bottom {
+    padding-bottom: 0;
+  }
+
+
+  .destination-item {
+    justify-content: center;
+    --padding-start: 0; // elimina el padding izquierdo por defecto
+  }
+  
+  .destination-label {
+    text-align: center;
+    width: 100%;
+  }

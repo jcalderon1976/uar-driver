@@ -1,0 +1,97 @@
+<ion-header>
+  <ion-toolbar  #toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon color="light" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title color="light" class="uar-title">U A R </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+    <ion-card *ngIf="!paymentMethodsList || paymentMethodsList.length===0">
+      <ion-card-content>
+        <ion-text>
+          No tienes ningun metodo de pago añadido. Puedes añadir más de una y seleccionar con cuál pagar.
+        </ion-text>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-grid>
+        <ion-list-header>
+          <ion-label>Metodo de Pago </ion-label>
+        </ion-list-header>
+
+        <div class="swiper mySwiper" #swiperContainer>
+          <div class="swiper-wrapper">
+            <div class="swiper-slide "  *ngFor="let card of paymentMethodsList; let i = index" >
+             
+              <ion-card  [ngClass]="card.DefaultPaymentMethod ? 'default-card-shadow' : 'normal-card-shadow'" class="credit-card" [button]="true"   (click)="cardEvent(card, i)"  [class.selected]="card.DefaultPaymentMethod" >
+                <div class="overlay"></div>
+                <ion-card-content>
+                  <div class="card-top">
+                    <div class="chip"></div>
+                    <div class="bank-name">  <img [src]= "getImage(card.paymentMethod)" class="cardImage">    </div>
+                  </div>
+              
+                  <div class="card-number">  {{ maskCardNumber(card.cardNumber) }}  </div>
+              
+                  <div class="card-details">
+                      <div class="expiry"><small>VALID THRU</small> {{ card.ExpireDate }}</div>
+                      <img *ngIf="card.DefaultPaymentMethod" [src]="checkmarkImg" class="default_checkmark">
+                  </div>
+                  <div class="cardholder">{{ card.clientName.toUpperCase() }} </div>
+                </ion-card-content>
+              </ion-card>
+              
+            </div>
+          </div>
+          <!-- Pagination si quieres -->
+          <div class="swiper-pagination"></div>
+        </div>
+    </ion-grid>     
+    
+
+
+    
+    <ion-row *ngIf="paymentOptions">
+      <ion-list class="cards-list ion-no-margin light-gray-bg">
+        <ion-list-header class="center-header">  <ion-label>Selecciona Metodo de Pago </ion-label>  </ion-list-header>
+      </ion-list>
+      <ion-list class="cards-list ion-no-margin light-gray-bg">
+        <ion-grid>
+          <ion-row> 
+              <ion-col><ion-card  class="card-add-new card-paypal"     [button]="true"  (click)="addPayPal()" ></ion-card> </ion-col>
+              <ion-col><ion-card  class="card-add-new card-creditcard" [button]="true"  (click)="addCreditCard()"></ion-card></ion-col>
+          </ion-row>
+        </ion-grid>
+        
+        
+      </ion-list>
+    </ion-row>
+
+    <ion-row *ngIf="PayPalOptions">
+      <ion-list class="cards-list ion-no-margin light-gray-bg">
+        <ion-list-header>  <ion-label>Usuario de paypal</ion-label>  </ion-list-header>
+      </ion-list>
+            <!-- Botón para PayPal -->
+            <ngx-paypal [config]="payPalConfig"></ngx-paypal>
+    </ion-row>
+  
+
+</ion-content>
+
+<ion-footer class="myFooter" >
+  <div class="add-payment-div contentSection" *ngIf="paymentList">
+        <ion-col>
+          <ion-button expand="block"   fill="solid" class ="continue-button"  (click)="addCreditCard()" > Añadir </ion-button>
+        </ion-col>
+  </div>
+  <div class="add-payment-div contentSection" *ngIf="paymentOptions">
+    <ion-col>
+      <ion-button expand="block"   fill="solid" class ="continue-button"  (click)="goBack()" > Salir </ion-button>
+    </ion-col>
+  </div>
+</ion-footer>

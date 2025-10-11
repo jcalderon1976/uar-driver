@@ -1,0 +1,75 @@
+<ion-header>
+  <ion-toolbar color="cab">
+    <ion-buttons slot="start">
+      <ion-back-button text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>Request Ride</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card class="map_card">
+    <ion-item>
+      <div slot="start">
+        <ion-label>
+          <ion-icon name="caret-down-circle" class="icon_drop"></ion-icon>
+          <div class="vertical-dash" slot="start"></div>
+          <ion-icon name="navigate-circle" class="icon_pin"></ion-icon>
+        </ion-label>
+      </div>
+      <ion-label>
+        <p class="horizontal-line">{{rideService.originAddress}}</p>
+        <p>{{rideService.destinationAddress}}</p>
+      </ion-label>
+    </ion-item>
+  </ion-card>
+
+  <agm-map [latitude]="lat" [longitude]="lng" [zoom]="zoom" [disableDefaultUI]="false" [zoomControl]="false"
+    [fullscreenControl]="false" [fullscreenControlOptions]="screenOptions" [styles]="rideService.mapStyle">
+    <agm-direction [origin]="rideService.origin" [destination]="rideService.destination"
+      [markerOptions]="markerOptions">
+    </agm-direction>
+  </agm-map>
+
+</ion-content>
+
+<ion-footer>
+  <div class="distance"> Distance : {{rideService.tripDistance}} km </div>
+
+  <ion-card>
+    <ion-item class="row-border">
+      <ion-icon name="logo-closed-captioning" slot="start" expand="icon-only" class="icon-margin-right icon_color">
+      </ion-icon>
+      <p>Cash</p>
+      <ion-button fill="clear" slot="end" routerLink="/changepayment" class="medium">Change</ion-button>
+    </ion-item>
+
+    <ion-grid class="ion-no-padding">
+      <ion-row class="row-border">
+        <ion-col size="6" class="col_line" class="ion-no-padding">
+          <ion-item routerLink="/fareestimate" class="ion-padding-left">
+            <ion-icon name="calculator" slot="start" expand="icon-only"
+              class="icon-margin-right icon_color ion-no-margin">
+            </ion-icon>
+            <ion-button fill="clear" class="medium">Fare Estimate</ion-button>
+          </ion-item>
+        </ion-col>
+
+        <ion-col size="6" class="ion-no-padding ion-padding-left">
+          <ion-item routerLink="/promo">
+            <ion-icon name="male" slot="start" expand="icon-only" class="icon-margin-right icon_color ion-no-margin">
+            </ion-icon>
+            <ion-button fill="clear" class="medium">Promo Code</ion-button>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <ion-button expand="full" type="submit" color="cab" class="submit-button" (click)="alertOnSubmit()">Confirm
+            booking
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
+</ion-footer>

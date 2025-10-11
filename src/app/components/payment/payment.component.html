@@ -1,0 +1,78 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon color="favorite" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card *ngIf="!paymentMethodsList || paymentMethodsList.length===0">
+    <ion-card-content>
+      <ion-text>
+        You don't have any card added. Add a card for payment. You can add more than one, and select which one to pay
+        from.
+      </ion-text>
+    </ion-card-content>
+  </ion-card>
+  <div *ngIf="paymentMethodsList && paymentMethodsList.length">
+    <ion-list-header class="default-header">
+      <ion-label>
+        Seleccionar Tarjeta por Defecto
+      </ion-label>
+    </ion-list-header>
+    <ion-list class="cards-list ion-no-margin light-gray-bg">
+      <ion-radio-group [(ngModel)]="selectedCardIndex" mode="md" (ionChange)="onRadioChange($event)">
+        <ion-card *ngFor="let card of paymentMethodsList; let i = index" class="sc-ion-card-ios-h">
+          <ion-card-content>
+            <div class="cardContentSection">
+              <ion-radio slot="start" [value]="i"  (ionSelect)="onRadioClick(i, card)"></ion-radio>
+             
+              <ion-label class="ion-padding-start">
+                <ion-row class="full" class="ion-align-items-center">
+                  <ion-col size="10">
+                    <ion-row class="ion-align-items-center">
+                      <p class="ion-no-margin"><strong>{{ maskCardNumber(card.cardNumber) }}</strong></p>
+                    </ion-row>
+                    <ion-row class="ion-align-items-center">
+                      <p class="small ion-no-margin">Expiry date: {{card.ExpireDate}}</p>
+                      <h6 class="small mycolor ion-padding-start ion-no-margin" *ngIf=={{card.DefaultPaymentMethod}}>✅ PRIMARY</h6>
+                    </ion-row>
+
+                  </ion-col>
+                </ion-row>
+              </ion-label>
+              <img [src]= "getImage(card.paymentMethod)" class="cardImage">
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-radio-group>
+    </ion-list>
+  </div>
+
+  
+</ion-content>
+
+<ion-footer class="myFooter" >
+  <div class="add-payment-div contentSection">
+    <ion-list-header>
+      <ion-label>
+        Añadir Tarjeta De Credito Nueva
+      </ion-label>
+    </ion-list-header>
+    <ion-grid class="ion-padding-horizontal">
+      <ion-row>
+        <ion-col>
+          <ion-button expand="block"   fill="solid" class ="continue-button"  (click)="addPayment()">Añada Metodo De Pago</ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-button expand="block"   fill="solid" class ="continue-button"  (click)="saveCard()" >Guardar Tarjeta</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-footer>

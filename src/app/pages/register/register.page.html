@@ -1,0 +1,377 @@
+<ion-content>
+  <br />
+  <div *ngIf="this.userRegistrationPage">
+    <div class="divInput">
+      <div class="avatar-container">
+        <ion-avatar class="big-avatar">
+          <img [src]="imageUrl || '../../../assets/images/userDefault.png'" />
+        </ion-avatar>
+        <ion-button
+          class="camera-button"
+          (click)="tomarFoto()"
+          color="medium"
+          fill="solid"
+          shape="round"
+        >
+          <ion-icon name="camera-outline" style="font-size: 20px"></ion-icon>
+        </ion-button>
+      </div>
+      <br />
+      <ion-label class="ion-text-center"
+        ><h1>Enter your Information</h1></ion-label
+      >
+      <br />
+      <ion-input
+        #nameInput
+        [(ngModel)]="name"
+        name="name"
+        label="Name"
+        label-placement="floating"
+        fill="solid"
+        class="gradient-input"
+        [ngClass]="{'input-error': nameError}"
+        [clearInput]="true"
+        required
+        (keydown.enter)="focusNext(emailInput)"
+        (keydown.tab)="focusNext(emailInput)"
+      ></ion-input>
+
+      <ion-input
+        #emailInput
+        [(ngModel)]="email"
+        name="email"
+        type="email"
+        label="Email"
+        label-placement="floating"
+        fill="solid"
+        class="gradient-input"
+        [class.input-error]="emailError"
+        [clearInput]="true"
+        required
+        (keydown.enter)="focusNext(passwordInput)"
+        (keydown.tab)="focusNext(passwordInput)"
+      >
+      </ion-input>
+
+      <ion-input
+        #passwordInput
+        [(ngModel)]="password"
+        name="password"
+        type="password"
+        label="Password"
+        label-placement="floating"
+        fill="solid"
+        class="gradient-input"
+        [ngClass]="{'input-error': passwordError}"
+        [clearInput]="true"
+        required
+        (keydown.enter)="focusNext(confirmPasswordInput)"
+        (keydown.tab)="focusNext(confirmPasswordInput)"
+      ></ion-input>
+
+      <ion-input
+        #confirmPasswordInput
+        [(ngModel)]="confirmPassword"
+        name="confirmPassword"
+        type="password"
+        label="Confirm Password"
+        label-placement="floating"
+        fill="solid"
+        class="gradient-input"
+        [ngClass]="{'input-error': passwordError}"
+        [clearInput]="true"
+        required
+        (keydown.enter)="focusNext(phoneInput)"
+        (keydown.tab)="focusNext(phoneInput)"
+      ></ion-input>
+
+      <ion-input
+        #phoneInput
+        [(ngModel)]="phoneNumber"
+        name="phoneNumber"
+        type="tel"
+        label="Phone"
+        maxlength="14"
+        label-placement="floating"
+        fill="solid"
+        class="gradient-input"
+        [ngClass]="{'input-error': phoneError}"
+        mask="(000) 000-0000"
+        [clearInput]="true"
+        required
+        (ionInput)="formatPhoneNumber($event)"
+        (keydown.enter)="submitIfValid()"
+        (keydown.tab)="submitIfValid()"
+      ></ion-input>
+    </div>
+    <ion-button
+      expand="block"
+      fill="solid"
+      class="continue-button"
+      (click)="register1()"
+      >Continuar</ion-button
+    >
+
+    <p class="login-link custom-align">
+      Already have an account?
+      <a (click)="goToLogin()" style="color: #aa2ce6">Login</a>
+    </p>
+  </div>
+  <div *ngIf="this.carRegistrationPage">
+    <ion-button
+      expand="block"
+      fill="solid"
+      class="continue-button"
+      (click)="goBackToLogin()"
+      ><ion-icon name="arrow-back-outline"></ion-icon>Volver
+    </ion-button>
+    <br />
+    <div class="divInput">
+      <ion-label class="ion-text-center"
+        ><h1>Informacion del Vehículo</h1></ion-label
+      >
+
+      <br />
+      <ion-row>
+        <!-- Car Make Dropdown -->
+        <ion-col size="12" class="ion-padding-bottom">
+          <ion-select
+            label="Marca"
+            label-placement="floating"
+            interface="action-sheet"
+            fill="solid"
+            placeholder="Selecciona Marca"
+            [compareWith]="compareFn"
+            (ionChange)="onMakeChange($event)"
+            class="car-lable gradient-input"
+            [(ngModel)]="selectedMake"
+          >
+            <ion-select-option *ngFor="let make of carMakes" [value]="make">
+              {{ make.Make_Name }}
+            </ion-select-option>
+          </ion-select>
+        </ion-col>
+
+        <!-- Car Model -->
+        <ion-col size="12" class="ion-padding-bottom">
+          <ion-select
+            label="Modelo"
+            label-placement="floating"
+            interface="action-sheet"
+            fill="solid"
+            placeholder="Selecciona el Modelo"
+            (ionChange)="onModelChange($event)"
+            class="car-lable gradient-input"
+            [(ngModel)]="selectedModel"
+          >
+            <ion-select-option *ngFor="let model of carModels" [value]="model">
+              {{ model }}
+            </ion-select-option>
+          </ion-select>
+        </ion-col>
+
+        <!-- Car Year Dropdown -->
+        <ion-col size="12" class="ion-padding-bottom">
+          <ion-select
+            label="Año"
+            label-placement="floating"
+            interface="action-sheet"
+            fill="solid"
+            placeholder="Selecciona Año"
+            class="car-lable gradient-input"
+            [(ngModel)]="car.year"
+          >
+            <ion-select-option *ngFor="let year of carYears" [value]="year">
+              {{ year }}
+            </ion-select-option>
+          </ion-select>
+        </ion-col>
+
+        <!-- Car Color Dropdown -->
+        <ion-col size="12" class="ion-padding-bottom">
+          <ion-select
+            label="Color"
+            label-placement="floating"
+            interface="action-sheet"
+            fill="solid"
+            placeholder="Selecciona Color"
+            class="car-lable gradient-input"
+            [(ngModel)]="car.color"
+          >
+            <ion-select-option *ngFor="let color of carColors" [value]="color">
+              {{ color }}
+            </ion-select-option>
+          </ion-select>
+        </ion-col>
+        <!-- Car Plate Number -->
+        <ion-col size="12">
+          <ion-input
+            type="text"
+            label-placement="floating"
+            fill="solid"
+            label="Vehicle Plate Number"
+            placeholder="Enter vehicle plate number"
+            class="car-lable gradient-input"
+            [(ngModel)]="car.plate_number"
+            (ionInput)="car.plate_number = $event.detail.value ? $event.detail.value.toUpperCase() : ''"
+          >
+          </ion-input>
+        </ion-col>
+      </ion-row>
+    </div>
+
+    <ion-button
+      expand="block"
+      fill="solid"
+      class="continue-button"
+      (click)="register2()"
+      >Continuar</ion-button
+    >
+  </div>
+  <div *ngIf="this.paymentMethodPage">
+    <ion-button
+      expand="block"
+      fill="solid"
+      class="continue-button"
+      (click)="goBackToCar()"
+      ><ion-icon name="arrow-back-outline"></ion-icon> Volver</ion-button
+    >
+    <br />
+    <div class="divInput">
+      <ion-label class="ion-text-center"><h1>Methodo de Pago</h1></ion-label>
+      <ion-row>
+        <ion-grid class="ion-padding-horizontal">
+          <ion-row>
+            <ion-col>
+              <div class="center-card">
+                <ion-card class="credit-card">
+                  <ion-card-content>
+                    <div class="card-top">
+                      <div class="chip"></div>
+                      <div class="bank-name">
+                        <img
+                          [src]="getImage(cardDetails.paymentMethod)"
+                          class="cardImage"
+                        />
+                      </div>
+                    </div>
+
+                    <div class="card-number">{{ cardDetails.cardNumber }}</div>
+
+                    <div class="card-details">
+                      <div class="expiry">
+                        <small>VALID THRU</small> {{ cardDetails.ExpireDate }}
+                      </div>
+                    </div>
+                    <div class="cardholder">
+                      {{ cardDetails.clientName?.toUpperCase() }}
+                    </div>
+                  </ion-card-content>
+                </ion-card>
+              </div>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-input
+                #cardNameInput
+                class="gradient-input ion-padding-horizontal gradient-input"
+                placeholder="Name"
+                [(ngModel)]="cardDetails.clientName"
+                label="Name"
+                label-placement="floating"
+                fill="solid"
+                required
+                [class.input-error]="nameError"
+                [clearInput]="true"
+                (keydown.enter)="focusNext(cardInput)"
+                (keydown.tab)="focusNext(cardInput)"
+              ></ion-input>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-input
+                #cardInput
+                class="gradient-input ion-padding-horizontal"
+                placeholder="0000 0000 0000 0000"
+                inputmode="numeric"
+                [(ngModel)]="cardDetails.cardNumber"
+                label="Numero de Tarjeta"
+                label-placement="floating"
+                fill="solid"
+                name="cardNumber"
+                maxlength="19"
+                required
+                [ngClass]="{'input-error': cardError}"
+                [clearInput]="true"
+                (ionInput)="formatCardNumber($event)"
+                (keydown.enter)="focusNext(codigoSeguridad)"
+                (keydown.tab)="focusNext(codigoSeguridad)"
+              >
+              </ion-input>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col size="6">
+              <ion-input
+                #codigoSeguridad
+                class="gradient-input ion-padding-horizontal"
+                placeholder="CVV"
+                inputmode="numeric"
+                [(ngModel)]="cardDetails.SecurityCode"
+                label="Codigo de Seguridad(CVV)"
+                label-placement="floating"
+                fill="solid"
+                name="codigoSeguridad"
+                maxlength="4"
+                required
+                [ngClass]="{'input-error': cvvError}"
+                [clearInput]="true"
+                (ionInput)="formatCVVNumber($event)"
+                (keydown.enter)="focusNext(fechaExpiracion)"
+                (keydown.tab)="focusNext(fechaExpiracion)"
+              >
+              </ion-input>
+            </ion-col>
+            <ion-col size="6">
+              <ion-input
+                #fechaExpiracion
+                class="gradient-input ut ion-padding-horizontal"
+                placeholder="MM/YY"
+                inputmode="numeric"
+                [(ngModel)]="cardDetails.ExpireDate"
+                label="Fecha de expiracion"
+                label-placement="floating"
+                fill="solid"
+                name="FechaExpiracion"
+                maxlength="5"
+                required
+                [ngClass]="{'input-error': expiryError}"
+                [clearInput]="true"
+                (ionInput)="formatExpiryNumber($event)"
+              >
+              </ion-input>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-checkbox [(ngModel)]="cardDetails.DefaultPaymentMethod"
+                >Metodo de pago por Defecto
+              </ion-checkbox>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-row>
+    </div>
+
+    <ion-button
+      expand="block"
+      fill="solid"
+      class="continue-button"
+      (click)="register3()"
+      >Continuar</ion-button
+    >
+  </div>
+</ion-content>

@@ -8,4 +8,9 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   constructor() {}
+
+  ionViewWillLeave() {
+    // 👇 Esto borra el foco antes de que el tab se oculte
+    (document.activeElement as HTMLElement)?.blur();
+  }
 }

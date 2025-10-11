@@ -1,0 +1,52 @@
+<ion-header  >
+  <ion-toolbar #toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon color="light" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title color="light" class="uar-title">U A R </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content [fullscreen]="true">
+   
+  <ion-list-header>
+    <ion-label>Email Actual </ion-label>
+  </ion-list-header>
+    <ion-label class="emailLabel">   {{ user?.email }} </ion-label>
+  <ng-container *ngIf="!user?.emailVerified; else showVerification">
+    <p class="emailLabel">✅ Correo verificado</p>
+  
+    <!-- Mostrar inputs y botón de cambio solo si está verificado -->
+    <ion-item lines="none">
+      <ion-input #NewEmailInput [(ngModel)]="newEmail"  placeholder="Nuevo email" type="email"
+      label="Nuevo Email" label-placement="floating" fill="solid"  required
+      class="gradient-input" [class.input-error]="emailError"  
+      [clearInput]="true"  (keydown.enter)="focusNext(passwordInput)" (keydown.tab)="focusNext(passwordInput)">
+      </ion-input>
+    </ion-item>
+  
+    <ion-item lines="none">
+      <ion-input #passwordInput [(ngModel)]="password" placeholder="Contraseña" type="password"
+      label="Contraseña" label-placement="floating" fill="solid"  required
+      class="gradient-input" [ngClass]="{'input-error': passwordError}">
+      </ion-input>
+    </ion-item>
+  
+    <ion-button expand="block" fill="solid" class="continue-button" (click)="changeEmail()">
+      Cambiar Email
+    </ion-button>
+  </ng-container>
+  
+  <!-- Si NO está verificado, mostrar solo botón de verificación -->
+  <ng-template #showVerification>
+    <p class="emailLabel">❌ Correo no verificado</p>
+    <ion-button expand="block" fill="solid" class="continue-button" (click)="sendVerificationEmail()">
+      Enviar Verificación
+    </ion-button>
+  </ng-template>
+  
+      
+   
+
+</ion-content>

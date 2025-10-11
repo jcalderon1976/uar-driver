@@ -1,7 +1,8 @@
 {
-  "name": "firebase-auth-test-app",
+  "name": "uar-driver",
   "integrations": {
     "capacitor": {}
   },
-  "type": "angular"
+  "type": "angular",
+  "id": "f6332e86"
 }

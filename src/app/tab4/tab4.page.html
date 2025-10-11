@@ -1,0 +1,52 @@
+<ion-header >
+  <ion-toolbar #toolbar>
+    <ion-title color="light" class="uar-title">U A R </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content [fullscreen]="true">
+  <br/>
+  <ion-list>
+    <app-photo></app-photo>
+    <ion-item lines="none" class="ion-margin-top">
+      <ion-label >
+        <h3  class="Name"  *ngIf="this.loggedInUser && this.loggedInUser.name">{{ this.loggedInUser.name }}</h3>
+        <h3  class="Name"  *ngIf="!this.loggedInUser || !this.loggedInUser.name">No User Name Available</h3>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  <ion-list>
+    <ion-list-header>
+      <ion-label class="Title">Account </ion-label>
+    </ion-list-header>
+    <ion-item [button]="true" (click)="openDocuments()">
+      <ion-icon color="favorite" slot="start" name="document-text-outline" size="large"></ion-icon>
+      <ion-label>Documentos</ion-label>
+      <ion-note slot="end"></ion-note>
+    </ion-item>
+    
+    <ion-item [button]="true" (click)="openCarInfo()">
+      <ion-icon color="favorite" slot="start"  name="car-outline" size="large"></ion-icon>
+      <ion-label>Vehiculo</ion-label>
+      <ion-note slot="end"></ion-note>
+    </ion-item>
+    <ion-item [button]="true" (click)="openSetting()">
+      <ion-icon color="favorite" slot="start"  name="person" size="large"></ion-icon>
+      <ion-label>Cuenta</ion-label>
+      <ion-note slot="end"></ion-note>
+    </ion-item>    
+    <ion-item [button]="true"    (click)="openLegal()">
+      <ion-icon color="favorite" slot="start"  name="information-circle-outline" size="large"></ion-icon>
+      <ion-label>Legal</ion-label>
+      <ion-note slot="end"></ion-note>
+    </ion-item>
+  </ion-list>
+  
+  
+  
+  </ion-content>
+
+  <ion-footer class="myFooter" >
+    <ion-col>
+      <ion-button expand="block"  fill="solid" class ="continue-button"   (click)="logoutAction()">Logout</ion-button>
+    </ion-col>
+  </ion-footer>

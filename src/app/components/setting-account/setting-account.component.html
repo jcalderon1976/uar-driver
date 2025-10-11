@@ -1,0 +1,61 @@
+<ion-header>
+  <ion-toolbar #toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon color="light" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title color="light" class="uar-title">U A R </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<br/>
+    
+            
+<ion-content [fullscreen]="true">
+  
+  <div class="avatar-container">
+    <ion-avatar class="big-avatar">
+      <img [src]="imageUrl || '../../../assets/images/userDefault.png'" />
+    </ion-avatar>
+    <ion-button class="camera-button" (click)="tomarFoto()" color="medium" fill="solid" shape="round">
+      <ion-icon name="camera-outline" style="font-size: 20px;"></ion-icon>
+    </ion-button>
+  </div>
+  <br/>
+  <div class="divInput">
+           <ion-label class="ion-text-center"><h1> Informacion del Usuario </h1></ion-label>
+           <br/>
+           <ion-input #nameInput [(ngModel)]="loggedInUser.name"  name="name" label="Name" label-placement="floating" fill="solid" class="gradient-input" 
+           [ngClass]="{'input-error': nameError}"     [clearInput]="true"required 
+           (keydown.enter)="focusNext(emailInput)" (keydown.tab)="focusNext(emailInput)"></ion-input>
+       
+           <ion-input #phoneInput [(ngModel)]="loggedInUser.phone"  name="phoneNumber"   type="tel" label="Phone"  maxlength="14"   label-placement="floating" 
+           fill="solid" class="gradient-input"    [ngClass]="{'input-error': phoneError}" mask="(000) 000-0000" [clearInput]="true" required
+           (ionInput)="formatPhoneNumber($event)" (keydown.enter)="submitIfValid()" (keydown.tab)="submitIfValid()"></ion-input>
+     
+           <ion-input  #emailInput [(ngModel)]="loggedInUser.email" name="email"   type="email"  label="Email"  label-placement="floating" fill="solid" class="gradient-input" 
+           [class.input-error]="emailError"  [clearInput]="true"  disabled="true" (keydown.enter)="focusNext(changeUser)" (keydown.tab)="focusNext(changeUser)"> </ion-input>
+     
+     
+         <ion-item  #user [button]="true" (click)="changeUser()"  expand="full"   class="cPassWord" lines="none">
+          <ion-icon color="favorite" slot="start" name="create-outline" size="large"></ion-icon>
+          <ion-label>Cambio de Email</ion-label>
+          <ion-note slot="end"></ion-note>
+         </ion-item>
+   
+        <ion-item [button]="true" (click)="changePassword()"  expand="full" class="cPassWord" lines="none">
+          <ion-icon color="favorite" slot="start"  name="lock-closed" size="large"></ion-icon>
+          <ion-label>Cambio de Contrasena</ion-label>
+          <ion-note slot="end"></ion-note>
+        </ion-item>
+     
+
+  </div>
+</ion-content>
+
+<ion-footer class="myFooter" >
+  <ion-col>
+    <ion-button expand="block"  fill="solid" class ="continue-button"    (click)="SaveChange()">Salvar Cambios</ion-button>
+  </ion-col>
+</ion-footer>

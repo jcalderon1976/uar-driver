@@ -35,3 +35,669 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import "@ionic/angular/css/palettes/dark.system.css";
+
+
+
+
+@import 'swiper/css'; // Básico
+@import 'swiper/css/effect-coverflow'; // Efecto tipo carrusel 3D
+@import 'swiper/css/pagination'; // Si quieres paginación
+@import 'swiper/css/navigation';          // Si usas flechas
+
+.ion-color-favorite {
+    --ion-color-base: var(--ion-color-favorite);
+    --ion-color-base-rgb: var(--ion-color-favorite-rgb);
+    --ion-color-contrast: var(--ion-color-favorite-contrast);
+    --ion-color-contrast-rgb: var(--ion-color-favorite-contrast-rgb);
+    --ion-color-shade: var(--ion-color-favorite-shade);
+    --ion-color-tint: var(--ion-color-favorite-tint);
+  }
+  
+  ion-toggle.custom-toggle {
+    --handle-background: #e7dedd;     // color del círculo
+    --handle-background-checked: #e7dedd; // color del círculo cuando está activo
+    --track-background: #AA5BE6;      // fondo apagado
+    --track-background-checked: #FF685D; // fondo encendido
+  }
+
+
+  .custom-label {
+    font-family: 'Cambai Minimalist', sans-serif;
+    color: #000;
+    font-size: 40px;
+    //font-weight: bold;
+    text-align: center;
+    letter-spacing: 0.5px;
+    display: block; /* Ensures full-width alignment */
+  }
+  
+  @font-face {
+    font-family: 'Cambai Minimalist';
+    src:  url('./assets/fonts/CambaiMinimalist.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+.uar-title{
+    font-family: 'Cambai Minimalist', sans-serif;
+    font-size: 19px;
+    font-weight: bold;
+    color: #ebe4e4;
+    text-align: center;
+    letter-spacing: 0.5px;
+}
+
+.center-label {
+  text-align: center;
+  width: 100%;
+  display: block; /* necesario para que text-align funcione */
+  font-weight: bold; /* opcional */
+}
+
+
+  ion-tab-bar {
+    background: white;
+    border-top: none; /* Quita la línea fea de arriba, opcional */
+    height: 60px; /* Ajusta la altura si quieres más espacio */
+    color: #FE695D; /* Texto e íconos en blanco */
+  }
+
+  ion-tab-button {
+    --color:#FE695D; /* Color cuando no está seleccionado */
+    --color-selected: #AA2CE6; /* Color cuando está seleccionado, puedes usar otro si quieres */
+  }
+  
+  ion-tab-button .tab-button-icon {
+    background: linear-gradient(45deg, #AA2CE6, #FE695D);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  ion-tab-button .tab-button-text {
+    background: linear-gradient(45deg, #AA2CE6, #FE695D);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  
+  .custom-align {
+      text-align: center; // or left, right, justify as needed
+    }
+  
+  .content-div{
+      color: #656565 !important;
+      font-size: 14px;             
+      font-family: 'Inter', sans-serif;
+      //font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: none;  // disables Ionic default capitalization
+  
+  }
+   
+  .divInput{
+      padding-left: 15px;
+      padding-right: 15px;
+      
+    }
+   
+   
+    
+    .gradient-input {
+      --background: transparent; /* Light gray background */
+      background: transparent;
+      border-radius: 8px;
+      border: 2px solid transparent;
+      background-image: linear-gradient(white, white),
+                        linear-gradient(45deg, #AA2CE6, #FE695D);
+      background-origin: border-box;
+      background-clip: content-box, border-box;
+      background-clip: padding-box, border-box;
+      --padding-start: 12px;
+      --padding-end: 12px;
+      font-size: 20px !important;
+      font-family: 'Inter', sans-serif;
+    }
+  
+    .gradient-input::part(native) {
+      font-family: 'Inter', sans-serif;
+      font-size: 34px;
+    }
+  
+    .input-button {
+      margin-top: 15px;
+      --background: transparent;
+      --border-radius: 8px;
+      --color: #AA2CE6;
+      border: 2px solid transparent;
+      background-image: linear-gradient(white, white),
+                        linear-gradient(45deg, #AA2CE6, #FE695D);
+      background-origin: border-box;
+      background-clip: content-box, border-box;
+    
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: none;
+    }
+    
+  
+    .input-button-Cancel {
+      margin-top: 15px;
+      --background: transparent;
+      --border-radius: 8px;
+      --color: #AA2CE6;
+      --border-radius: 8px; // Set your custom radius here (e.g., 5px, 10px, 50px...)
+      --border-width: .5px; // Optional for outline
+      border: 1px solid transparent;
+      background-image: linear-gradient(white, white),
+                        linear-gradient(45deg, #AA2CE6, #FE695D);
+      background-origin: border-box;
+      background-clip: content-box, border-box;
+    
+      font-size: 14px;             
+      font-family: 'Cambai Minimalist', sans-serif;
+      //font-weight: 600;
+      letter-spacing: 8.5px;
+      text-transform: true;  // disables Ionic default capitalization
+      margin: 14px;
+      border-radius: 8px; // Set your custom radius here (e.g., 5px, 10px, 50px...)
+      font-weight: bold;
+    }
+  
+  
+    .continue-button{
+     // padding:5px;
+    //  height:60px;
+      --border-radius: 8px; // Set your custom radius here (e.g., 5px, 10px, 50px...)
+      --border-width: .5px; // Optional for outline
+      font-size: 14px;             
+      font-family: 'Cambai Minimalist', sans-serif;
+      //font-weight: 600;
+      letter-spacing: 8.5px;
+      text-transform: true;  // disables Ionic default capitalization
+      --background: linear-gradient(45deg, #FE695D , #AA2CE6  )!important;
+      --background-hover: linear-gradient(45deg, #FE695D, #AA2CE6) !important;
+      --background-activated: linear-gradient(45deg, #AA2CE6, #FE695D) !important;
+      --ripple-color: transparent !important; /* Elimina la onda azul */
+      --color: white;
+      font-weight: bold;
+      text-transform: uppercase;
+      padding-left:12px;
+      padding-right:12px;
+      //width: calc(100% - 40px); /* padding horizontal */
+     // margin: 20px;
+    }
+
+    .continue-button:active {
+      transform: scale(0.98);
+      transition: transform 0.1s ease-in-out;
+    }
+    
+    .divider {
+      background-color: #AA2CE6; // Line color
+      height: 1px;            // Line thickness
+      width: 95%;
+      border: none;
+      margin: 8px 0;         // Adjust spacing as needed
+    }
+  
+  
+    .provider-button {
+      --background: transparent;
+      --border-radius: 8px;
+      --border-width: 0px; /* Let the gradient border handle this */
+      width: 100%;
+      height: 50px;
+      margin-bottom: 10px;
+    
+      border: 2px solid transparent;
+      background-image: transparent ,
+                        linear-gradient(45deg, #AA2CE6, #FE695D);
+      background-origin: border-box;
+      background-clip: content-box, border-box;
+      padding: 0px; /* Quita el padding interno por si acaso */
+    }
+    
+    .provider-button::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      text-transform: none;  // disables Ionic default capitalization
+      z-index: -1;
+      border-radius: 10px;
+    }
+  
+  
+    /* Optional: Style the text span */
+    .button-text {
+      font-weight: 600;
+      color: #656565;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      margin-left: 8px; /* spacing after icon */
+      text-transform: none;  // disables Ionic default capitalization
+    }
+    /* Nuevo contenedor interno para alinear ícono + texto */
+  .button-content {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0 16px;
+    height: 100%;
+    width: 100%;
+    font-family: 'Inter', sans-serif;
+    font-size: 20px;
+  }
+   
+   /* Icon inside button */
+   .provider-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 12px;
+  }
+  
+  .align-left {
+    justify-content: flex-start !important; /* Mueve contenido a la izquierda */
+    text-align: left;
+  }
+  
+  .align-left::part(native) {
+    justify-content: flex-start !important; /* Para asegurar compatibilidad */
+  }
+    
+    ion-input.input-button.input-error {
+      --border-color: #f44336 !important; // error border color (red)
+      --color: #f44336 !important; // error text color (red)
+    }
+
+    .input-error {
+      --highlight-color-focused: #FE695D !important;  /* Línea inferior roja */
+      --border-color: #FE695D !important;            /* Borde rojo si hay */
+      --color: #FE695D !important;                   /* Color del texto */
+      --placeholder-color: #FE695D !important;       /* Placeholder rojo */
+    }
+    
+    .input-error::part(native) {
+      color: #FE695D !important;  /* Color del texto real */
+      font-weight: bold;
+    }
+
+
+    
+    .divInput ion-input {
+      margin-bottom: 14px;
+    }
+  
+  
+    ion-input.sc-ion-input-md {
+      --background: #e0f7fa; /* Light cyan for Android only */
+      --border-radius: 10px;
+      --color: #000;
+    }
+    
+    ion-input.sc-ion-input-md::part(native) {
+      background-color: #e0f7fa; /* Background for input field */
+      color: #000;               /* Text color */
+      border-radius: 8px;
+      padding: 8px;
+    }
+  
+    .small-icon {
+      font-size: 16px;
+      width: 30px;
+      height: 30px;
+    }
+  
+    .custom-alert-card .alert-wrapper {
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      background: #ffffff;
+      padding: 0;
+      width: 90%;
+      max-width: 320px;
+      min-height: 200px; /* ← fuerza espacio mínimo */
+      padding: 10px;
+    }
+    
+    .custom-alert-card .alert-img-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-top: 10px;
+    }
+    
+    .custom-alert-card .alert-img {
+      width: 60px;
+      height: 60px;
+    }
+    
+    .custom-alert-card .alert-title {
+      text-align: center;
+      font-size: 22px;
+      color: #FE695D; /* Rojo como el de la imagen */
+      font-weight: bold;
+      margin-top: 16px;
+      margin-bottom: 8px;
+    }
+    
+    .custom-alert-card .alert-text {
+      text-align: center;
+      font-size: 14px;
+      color: #666;
+      padding: 0 20px 20px 20px;
+    }
+    
+    .custom-alert-card .alert-button-group {
+      justify-content: center !important;
+      display: block !important; /* ← evita que estire los botones */
+      text-align: center;
+     
+    }
+    .alert-button.sc-ion-alert-ios{
+      flex: none !important;
+      background-image: linear-gradient(45deg, #AA2CE6, #FE695D) !important;
+      color: white !important;
+      font-weight: bold;
+      font-size: 14px;
+      border-radius: 12px;
+      padding: 12px 24px;
+      margin: 10px auto 20px auto;
+      width: auto !important;
+      max-width: 200px; /* ← fuerza el tamaño horizontal */
+      text-align: center;
+      display: block;
+      text-transform: uppercase;
+      font-family: 'Cambai Minimalist', sans-serif;
+      letter-spacing: 3.5px;
+
+    }
+
+
+    .custom-alert-card .alert-button-custom {
+      flex: none !important;
+      background-image: linear-gradient(45deg, #AA2CE6, #FE695D) !important;
+      color: white !important;
+      font-weight: bold;
+      font-size: 14px;
+      border-radius: 12px;
+      padding: 12px 24px;
+      margin: 10px auto 20px auto;
+      width: auto !important;
+      max-width: 200px; /* ← fuerza el tamaño horizontal */
+      text-align: center;
+      display: block;
+      text-transform: uppercase;
+      font-family: 'Cambai Minimalist', sans-serif;
+      letter-spacing: 3.5px;
+    }
+    
+
+    .custom-alert-card .alert-button-custom::part(native) {
+      background: transparent !important;
+      border: none !important;
+    }
+    
+
+    ion-alert::part(button) {
+      padding: 15px;
+      height: 60px;
+      font-size: 14px;
+      font-family: 'Cambai Minimalist', sans-serif;
+      letter-spacing: 8.5px;
+      font-weight: bold;
+      text-transform: uppercase;
+      --border-radius: 8px;
+      --background: linear-gradient(45deg, #AA2CE6,  #FE695D);
+      --background-hover: linear-gradient(45deg, #FE695D, #AA2CE6);
+      --background-activated: linear-gradient(45deg, #AA2CE6, #FE695D);
+      --color: white;
+      --ripple-color: transparent;
+      width: calc(100% - 40px);
+      margin: 20px;
+    }
+
+    ion-alert::part(button) {
+      text-transform: none;
+      background: linear-gradient(45deg, #AA2CE6,  #FE695D);
+    }
+    .my-custom-alert::part(button) {
+      // Estilo base para todos
+      padding: 15px;
+      height: 60px;
+    }
+    
+    .my-custom-alert button.alert-button.custom-cancel-btn {
+      // o usa part si es visible:
+      background: linear-gradient(45deg, #AA2CE6,  #FE695D);
+      color: white;
+      font-weight: bold;
+    }
+
+    .alert-button-cancel{
+      padding:15px;
+      height:60px;
+      --border-radius: 8px; // Set your custom radius here (e.g., 5px, 10px, 50px...)
+      --border-width: .5px; // Optional for outline
+      font-size: 14px;             
+      font-family: 'Cambai Minimalist', sans-serif;
+      //font-weight: 600;
+      letter-spacing: 8.5px;
+      text-transform: true;  // disables Ionic default capitalization
+      --background: linear-gradient(45deg, #AA2CE6,  #FE695D)!important;
+      --background-hover: linear-gradient(45deg, #FE695D, #AA2CE6) !important;
+      --background-activated: linear-gradient(45deg, #AA2CE6, #FE695D) !important;
+      --ripple-color: transparent !important; /* Elimina la onda azul */
+      --color: white;
+      font-weight: bold;
+      text-transform: uppercase;
+
+      width: calc(100% - 40px); /* padding horizontal */
+      margin: 20px;
+    }
+
+    .alert-button-cancel:active {
+      transform: scale(0.98);
+      transition: transform 0.1s ease-in-out;
+    }
+
+    .alert-button-ok{
+      padding:15px;
+      height:60px;
+      --border-radius: 8px; // Set your custom radius here (e.g., 5px, 10px, 50px...)
+      --border-width: .5px; // Optional for outline
+      font-size: 14px;             
+      font-family: 'Cambai Minimalist', sans-serif;
+      //font-weight: 600;
+      letter-spacing: 8.5px;
+      text-transform: true;  // disables Ionic default capitalization
+      --background: linear-gradient(45deg, #AA2CE6,  #FE695D)!important;
+      --background-hover: linear-gradient(45deg, #FE695D, #AA2CE6) !important;
+      --background-activated: linear-gradient(45deg, #AA2CE6, #FE695D) !important;
+      --ripple-color: transparent !important; /* Elimina la onda azul */
+      --color: white;
+      font-weight: bold;
+      text-transform: uppercase;
+
+      width: calc(100% - 40px); /* padding horizontal */
+      margin: 20px;
+    }
+
+    .alert-button-ok:active {
+      transform: scale(0.98);
+      transition: transform 0.1s ease-in-out;
+    }
+
+
+    .delete-button {
+      //padding: 15px;
+      //height: 60px;
+      font-size: 14px;             
+      font-family: 'Cambai Minimalist', sans-serif;
+      letter-spacing: 8.5px;
+      font-weight: bold;
+      text-transform: uppercase;
+      border:#FE695D;
+      --ripple-color: transparent !important;
+      --color: #FE695D;
+      border-radius: 8px;
+      //width: calc(100% - 40px);
+      //margin: 20px;
+    }
+    
+
+    .delete-button:active {
+      transform: scale(0.98);
+      transition: transform 0.1s ease-in-out;
+    }
+
+    
+
+    
+  .cardListdiv{
+    height: 100%;
+  }
+
+
+  .swiper {
+    width: 100%;
+    height: 300px;
+  }
+  
+  .swiper-slide {
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80% !important;
+    max-width: 380px;
+  }
+  
+  
+  .credit-card {
+    background-image: url('assets/cards/blue_background_credit_card.png'); /* Tu imagen */
+    background-size: cover;           /* Cubre todo sin repetir */
+    background-position: center;      /* Centrado */
+    background-repeat: no-repeat;     /* No se repite */
+    
+    color: white;
+    border-radius: 15px;
+    padding: 0px;
+    margin: 0;
+    height: 190px;
+    width: 300px;
+    font-family: 'Courier New', Courier, monospace;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.1); /* Ligera sombra sobre la imagen */
+    z-index: 1;
+  }
+  
+  .credit-card ion-card-content {
+    position: relative;
+    z-index: 2;
+  }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .bank-name {
+    font-size: 1.5em;
+    font-weight: bold;
+  }
+  
+  .chip {
+    width: 50px;
+    height: 35px;
+    background: silver;
+    border-radius: 5px;
+    position: relative;
+  }
+  
+  .chip::before,
+  .chip::after {
+    content: '';
+    position: absolute;
+    background: black;
+    height: 2px;
+    width: 100%;
+    left: 0;
+  }
+  
+  .chip::before {
+    top: 10px;
+  }
+  
+  .chip::after {
+    bottom: 10px;
+  }
+  
+  .card-number {
+    margin-top: 20px;
+    font-size: 17px;
+    letter-spacing: 3px;
+  }
+  
+  .card-details {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+    font-size: 0.9em;
+  }
+  
+  .expiry {
+    font-weight: bold;
+    text-align: right;
+    font-size: 12px;
+    color: rgb(228, 223, 223);
+    margin-top: 10px;
+  }
+  
+  .cardholder {
+    font-weight: bold;
+  }
+
+  .default_checkmark{
+    height: 25px;
+    width: 25px;
+  }
+
+  .default-card-shadow {
+    box-shadow: 0 4px 15px rgba(20, 255, 75, 1.6); /* Naranja/roja 🔥 */
+  }
+  
+  .normal-card-shadow {
+     /* ✅ Sombra elegante */
+     box-shadow: 2px 8px 22px rgba(0, 0, 0, 0.473);
+  }
+
+  .ion-padding-horizontal{
+  
+  }
+
+  ion-list-heade{
+    font-size: 24px;
+    font-weight: bold;
+    color: #515151;
+    margin-top: 10px;
+  }
+
+  /* ion-label{
+    font-size: 20px;
+    color: #515151;
+    margin-top: 10px;
+  } */
+  
+  

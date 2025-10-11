@@ -1,0 +1,52 @@
+<ion-header>
+  <ion-toolbar #toolbar>
+    <ion-buttons slot="start"> </ion-buttons>
+    <ion-title color="light" class="uar-title">{{rideService.rideInfo.ride_started ? 'En Proceso' : 'Espera de Servicio'}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+   <div class="parentMap">
+    <google-map height="100%" width="100%" [center]="center" [options]="options" >
+      @if (directionsResults$ | async; as directionsResults) {  <map-directions-renderer [directions]="directionsResults" [options]="{ suppressMarkers: true }" />   }
+   
+   
+   
+   <ion-fab vertical="bottom" horizontal="start" slot="fixed" class="fab-icon"  >
+    <ion-fab-button  color="light"  class="duration-fab" >
+      <b style="color:#FE695D">{{rideService.waitingTime}} </b>
+    </ion-fab-button>
+   </ion-fab>
+   <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="fab-icon" >
+    <ion-fab-button  color="light"  class="duration-fab" >
+      <b style="color:#FE695D">{{rideService.tripDistance}}</b> 
+    </ion-fab-button>
+   </ion-fab>
+
+  </google-map>
+  </div>
+  <ion-list lines="none" class="ion-padding">
+    <ion-grid class="driver-info-grid">
+          <ion-row  class="ion-justify-content-center ion-align-items-center"><ion-col class="ion-text-center"> <img class="image-avatar" src="../../../assets/images/DriverPick.png" />  </ion-col></ion-row>
+          <ion-row class="ion-justify-content-center ion-align-items-center">
+            <ion-col class="ion-text-center">
+              <div class="rating">   <ion-icon *ngFor="let filled of getStars()" [name]="filled ? 'star' : 'star-outline'" class="star"></ion-icon>  </div>
+            </ion-col>
+          </ion-row>
+          <ion-row  class="ion-justify-content-center ion-align-items-center"> <ion-col class="ion-text-center" >{{rideService.driverInfo.car_license_plate}}</ion-col> </ion-row>
+          <ion-row  class="ion-justify-content-center ion-align-items-center"><ion-col class="ion-text-center driver-name"><b *ngIf="rideService.driverInfo && rideService.driverInfo.name">{{ rideService.driverInfo.name }}</b> </ion-col></ion-row>
+          <ion-row  class="ion-justify-content-center ion-align-items-center"><ion-col class="ion-text-center driver-name"><b *ngIf="!rideService.driverInfo || !rideService.driverInfo.name">No Driver Name Available</b> </ion-col></ion-row>
+          <ion-row  class="ion-justify-content-center ion-align-items-center"><ion-col class="ion-text-center"> {{rideService.driverInfo.car_color}} * {{rideService.driverInfo.car_brand}} {{rideService.driverInfo.car_model}} </ion-col>  </ion-row>
+ 
+    </ion-grid>
+ 
+    <ion-item class="destination-item ion-text-center">
+      <ion-icon name="pin" expand="icon-only" slot="start"></ion-icon>
+      <ion-label class="destination-label">{{rideService.destinationAddress}}</ion-label>
+    </ion-item>
+  </ion-list>
+
+</ion-content>
+<ion-footer class="ion-padding">
+  <ion-button *ngIf="rideService.rideInfo.ride_accepted" expand="block"  fill="solid" class ="continue-button"  type="submit"  (click)="cancelRide()">Cancel Booking</ion-button>
+</ion-footer>

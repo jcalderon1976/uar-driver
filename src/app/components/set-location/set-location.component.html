@@ -1,0 +1,26 @@
+<ion-content>
+  <ion-searchbar #searchbar  class="background-transparent" inputmode="search" 
+    showCancelButton="never" (ionInput)="searchOnChange($event)" (ionCancel)="reset()" selected="true" >
+  </ion-searchbar>
+  <ion-card *ngIf="autocompleteItems && autocompleteItems.length">
+    <ion-list style="box-shadow: 0 0px 6px #190783!important;" color="favorite">
+      <ion-item *ngFor="let item of autocompleteItems" class="item-requset-ride" tappable (click)="chooseItem(item)">
+        <ion-icon   slot="start" style="margin-top:20px; font-size:1.3em"></ion-icon>
+        <ion-label>
+          <p>{{item}}</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-card>
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <ion-text color="favorite">
+        Search a location in input box
+      </ion-text>
+    </ion-row>
+  </ion-grid>
+
+
+  <ion-button expand="full" fill="clear" color="favorite" (click)="dismiss()">Close</ion-button>
+
+</ion-content>

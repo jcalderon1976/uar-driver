@@ -1,0 +1,126 @@
+
+.input {
+    border: 0.5px solid rgb(210, 210, 210);
+    background-color: rgba(240, 240, 240, 0.5);
+    border-radius: 3px;
+    font-size: 0.9em !important;
+}
+.default-header {
+    background: #f8f8f8;
+}
+.label {
+    font-size: 12px;
+}
+.small {
+    font-size: 14px;
+    color: rgb(120, 120, 120);
+}
+.icon {
+    font-size: 21px;
+}
+.cards-list {
+    width: 100%;
+    overflow: scroll;
+}
+
+.add-payment-div {
+    margin-bottom: 10px;
+    padding: 10px;
+}
+
+.contentSection {
+    background: #fff;
+}
+
+.cardContentSection {
+    display: flex;
+    align-items: center;
+
+    ion-label {
+        width: 80%;
+    }
+}
+.cardImage {
+    width: 70px;
+}
+
+.lockSection {
+    display: flex;
+    align-items: flex-start;
+}
+
+.lockIcon {
+    font-size: 21px;
+    padding-right: 8px;
+}
+
+.secureTextSection {
+    padding-top: 5px;
+}
+
+.credit-card-text {
+    font-family: "OCR A Std", "Roboto Mono", "Courier New", sans-serif;
+    font-size: 16px;
+    letter-spacing: 2px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: rgb(102, 101, 104);
+    padding-right: 120px;
+    width: 100%;
+}
+
+.credit-card-text2 {
+    font-family: "OCR A Std", "Roboto Mono", "Courier New", sans-serif;
+    font-size: 12px;
+    letter-spacing: 2px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: rgb(102, 101, 104);
+    width: 100%;
+}
+
+ion-item.selected {
+    border: 2px solid var(--ion-color-favorite); // Change border color
+    background-color: var(--ion-color-light); // Light background when selected
+    transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+  }
+  
+  ion-item {
+    border: 1px solid transparent; // Default border
+    border-radius: 8px;
+    margin-bottom: 8px;
+  }
+
+  .card-add-new {
+    background-size: contain;      /* Ajusta la imagen al tamaño del card sin recortarla */
+    background-position: center;   /* Centra la imagen */
+    background-repeat: no-repeat;  /* No repite la imagen */
+    background-color: #F2F2F2;        /* Fondo blanco de respaldo */
+    
+   // width: 45%;
+    height: 150px;                 /* Ajusta según necesites */
+    color: #473f3f;                /* Texto oscuro */
+    display: flex;                 /* Centrado de contenido interno si hay */
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;           /* Bordes redondeados */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Sombra para estilo */
+  }
+
+  .card-paypal {
+    background-image: url('../../../assets/cards/paypalLable.png');
+  }
+
+  .card-creditcard {
+    background-image: url('../../../assets/cards/creditcard.png');
+  }
+
+  .center-header {
+    justify-content: center;
+    text-align: center;
+  }
+  
+  .center-header ion-label {
+    text-align: center;
+    width: 100%;
+  }

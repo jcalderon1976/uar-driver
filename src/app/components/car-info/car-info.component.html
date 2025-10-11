@@ -1,0 +1,73 @@
+<ion-header>
+  <ion-toolbar #toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()">
+        <ion-icon color="light" name="close"></ion-icon>
+      </ion-button>      
+    </ion-buttons>
+    <ion-title color="light" class="uar-title"> Información </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+  <ion-grid>
+    <ion-list-header>
+      <ion-label>Información del Vehículo </ion-label>
+    </ion-list-header>
+
+    <ion-row>
+      
+      <!-- Car Make Dropdown -->
+      <ion-col size="12" class="ion-padding-bottom">     
+        <ion-select  label="Marca"  label-placement="floating"  interface="action-sheet"  fill="solid"  placeholder="Selecciona Marca"
+                     [compareWith]="compareFn" (ionChange)="onMakeChange($event)"  class="car-lable gradient-input"  [(ngModel)]="selectedMake">
+        <ion-select-option *ngFor="let make of carMakes" [value]="make">   {{ make.Make_Name }}  </ion-select-option>
+      </ion-select>
+     
+      </ion-col>
+      
+
+      <!-- Car Model -->
+      <ion-col size="12" class="ion-padding-bottom">     
+        <ion-select  label="Modelo"  label-placement="floating"  interface="action-sheet"  fill="solid"  placeholder="Selecciona el Modelo"
+                     (ionChange)="onModelChange($event)"  class="car-lable gradient-input"  [(ngModel)]="selectedModel">
+        <ion-select-option *ngFor="let model of carModels" [value]="model">  {{ model }}  </ion-select-option>
+      </ion-select>
+     </ion-col>
+      
+      <!-- Car Year Dropdown -->
+      <ion-col size="12" class="ion-padding-bottom">     
+        <ion-select label="Año" label-placement="floating" interface="action-sheet" fill="solid"
+                    placeholder="Selecciona Año" class="car-lable gradient-input" [(ngModel)]="car.year">
+          <ion-select-option *ngFor="let year of carYears" [value]="year"> {{ year }} </ion-select-option>
+        </ion-select>
+      </ion-col>
+
+      <!-- Car Color Dropdown -->
+      <ion-col size="12" class="ion-padding-bottom">     
+        <ion-select label="Color" label-placement="floating" interface="action-sheet" fill="solid"
+                    placeholder="Selecciona Color" class="car-lable gradient-input" [(ngModel)]="car.color">
+          <ion-select-option *ngFor="let color of carColors" [value]="color"> {{ color }} </ion-select-option>
+        </ion-select>
+      </ion-col>
+      <!-- Car Plate Number -->
+      <ion-col size="12">        
+        <ion-input
+        type="text"
+        label-placement="floating"
+        fill="solid"
+        label="Vehicle Plate Number"
+        placeholder="Enter vehicle plate number"
+        class="car-lable gradient-input"
+        [(ngModel)]="car.plate_number"
+        (ionInput)="car.plate_number = $event.detail.value ? $event.detail.value.toUpperCase() : ''">
+      </ion-input>
+      </ion-col>
+
+    </ion-row>
+  </ion-grid>
+</ion-content>  
+<ion-footer>
+  <ion-toolbar>
+    <ion-button expand="block"  fill="solid" (click)="saveCarInfo()"   class ="continue-button">Guardar Cambios</ion-button>
+  </ion-toolbar>
+</ion-footer>
