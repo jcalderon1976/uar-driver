@@ -1,0 +1,135 @@
+:host {
+  display: block;
+}
+
+.map-container {
+  position: relative;
+  height: 240px;
+  margin: 16px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #f4f6fb;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+google-map {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.map-placeholder {
+  height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f4f6fb;
+}
+
+.details-card {
+  margin: 16px;
+  border-radius: 18px;
+  box-shadow: 0 18px 30px rgba(0, 0, 0, 0.08);
+}
+
+.actions-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0 16px 24px;
+  position: sticky;
+  bottom: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #ffffff 40%);
+  backdrop-filter: blur(6px);
+  margin-top: auto;
+}
+
+.actions-sheet ion-button {
+  --border-radius: 14px;
+  font-weight: 600;
+}
+
+.info-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 14px;
+  align-items: flex-start;
+}
+
+.info-row ion-icon {
+  font-size: 20px;
+  color: var(--ion-color-primary, #fe695d);
+  margin-top: 4px;
+}
+
+.info-text h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1c1c1e;
+  letter-spacing: 0.2px;
+}
+
+.info-text p {
+  margin: 4px 0 0;
+  color: #6c757d;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.stats-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.stat {
+  flex: 1 1 120px;
+  border-radius: 14px;
+  padding: 12px 10px;
+  text-align: center;
+  background: linear-gradient(145deg, #fe695d1c, #aa2ce61c);
+}
+
+.stat label {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #7a7a7a;
+  letter-spacing: 0.6px;
+  margin-bottom: 4px;
+}
+
+.stat span {
+  font-weight: 600;
+  font-size: 16px;
+  color: #1c1c1e;
+}
+
+ion-footer ion-toolbar {
+  --padding-start: 16px;
+  --padding-end: 16px;
+}
+
+ion-footer ion-button {
+  min-width: 110px;
+  max-width: 20px;;
+}
+
+@media (min-width: 768px) {
+  .map-container {
+    height: 320px;
+    margin: 24px;
+  }
+
+  .details-card {
+    margin: 24px;
+  }
+
+  .actions-sheet {
+    padding: 0 24px 24px;
+  }
+}
+
+

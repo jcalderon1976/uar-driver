@@ -10,8 +10,9 @@ import { Payment2Component } from '../components/payment2/payment2.component';
 import { LegalComponent } from '../components/legal/legal.component';
 import { SettingAccountComponent } from '../components/setting-account/setting-account.component';
 import { CarInfoComponent } from '../components/car-info/car-info.component';
-import { AlertController } from '@ionic/angular';
+import { AlertController, NavController } from '@ionic/angular';
 import { PhotoComponent } from '../components/photo/photo.component';
+
 @Component({
   selector: 'app-tab4',
   templateUrl: 'tab4.page.html',
@@ -30,7 +31,8 @@ export class Tab4Page {
     private alertController: AlertController,
     private util: UtilService,
     private api: APIService,
-    private router: Router
+    private router: Router,
+    private navCtrl: NavController
   ) {
     this.loggedInUser = this.userProvider.getUserData();
     this.image =
@@ -91,18 +93,21 @@ export class Tab4Page {
     await alert.present();
   }
 
-  logout() {
-    this.userProvider.logout().then((res) => {
-      //this.util.goToNew('/loader');
-      //this.router.navigate(['/loader']);
+  async logout() {
+    try {
+      await this.userProvider.logout();
+    } catch (error) {
+      console.error('Error during logout:', error);
+    } finally {
       sessionStorage.clear();
       localStorage.clear();
-      this.router.navigate(['/login'], { replaceUrl: true });
-    });
+      console.log('Navegando a login…');
+      this.navCtrl.navigateRoot('/login', { replaceUrl: true });
+    }
   }
 
   async openDocuments() {
-     this.router.navigate(['/document-management'], { replaceUrl: true });
+     this.router.navigate(['/document-management']);
   }
 
   async openCarInfo() {

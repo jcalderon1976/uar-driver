@@ -100,8 +100,9 @@ ion-content {
   transform: translate(0%, 30%);
   z-index: 10;
 
-  width: 44px;
-  height: 44px;
+  width: clamp(40px, 14vw, 56px);
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
   --border-radius: 50%;
   --padding-start: 0;
   --padding-end: 0;
@@ -111,6 +112,10 @@ ion-content {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.camera-button ion-icon {
+  font-size: clamp(18px, 5vw, 24px);
 }
 
 

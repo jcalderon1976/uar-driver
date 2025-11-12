@@ -128,9 +128,17 @@ export class RideDetailsPage implements OnInit {
     }
 
     // Retrieve the customer's details.
-    this.api.getUser().subscribe((res) => {
-      this.customer = res['name'];
-    });
+    console.log('Ride Info:', this.rideInfo);
+    console.log('clientId:', this.rideInfo['clientId']);
+
+   this.api.getRideUser(this.rideInfo['clientId']).then((res) => {
+    console.log('Customer name:', res.name);
+    this.customer = res.name  ;
+    }, (err) => {
+    console.error('Error obtaining customer name:', err);
+    this.customer = 'User not found';
+   });
+
   }
 
   goBack() {

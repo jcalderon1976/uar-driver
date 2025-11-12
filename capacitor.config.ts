@@ -1,11 +1,15 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.orchidstechnology.uar',
+  appId: 'com.orchids.uar.driver',
   appName: 'uar-driver',
   webDir: 'www',
-  server: {
-    cleartext: true, // permite HTTP para desarrollo
+  plugins: {
+    Keyboard: {
+      resize: 'body',
+      style: 'dark',
+      resizeOnFullScreen: true
+    }
   }
 };
 

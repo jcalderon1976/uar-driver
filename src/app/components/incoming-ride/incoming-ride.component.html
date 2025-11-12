@@ -1,0 +1,81 @@
+<ion-header translucent>
+  <ion-toolbar>
+    <ion-title>Nuevo servicio</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="onDecline()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="map-container">
+    <ng-container *ngIf="!loadingRoute; else loadingTemplate">
+      <google-map
+        [center]="center"
+        [options]="mapOptions"
+        height="100%"
+        width="100%"
+      >
+        <map-directions-renderer
+          *ngIf="directionsResult"
+          [directions]="directionsResult"
+          [options]="directionsOptions"
+        ></map-directions-renderer>
+      </google-map>
+    </ng-container>
+
+    <ng-template #loadingTemplate>
+      <div class="map-placeholder">
+        <ion-spinner name="crescent" color="primary"></ion-spinner>
+      </div>
+    </ng-template>
+  </div>
+
+  <ion-card class="details-card">
+    <ion-card-header>
+      <ion-card-subtitle>Información del viaje</ion-card-subtitle>
+      <ion-card-title>${{ stats.fare | number: '1.2-2'  }}
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="info-row">
+        <ion-icon name="radio-button-on-outline"></ion-icon>
+        <div class="info-text">
+          <h3>Origen</h3>
+          <p>{{ ride?.origin_address || '--' }}</p>
+        </div>
+      </div>
+
+      <div class="info-row">
+        <ion-icon name="flag-outline"></ion-icon>
+        <div class="info-text">
+          <h3>Destino</h3>
+          <p>{{ ride?.destination_address || '--' }}</p>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat">
+          <label>Duración</label>
+          <span>${{ stats.duration }}</span>
+        </div>
+
+        <div class="stat">
+          <label>Distancia</label>
+          <span>{{ stats.distance }}</span>
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+  <div class="actions-sheet">
+    <ion-button expand="block" class ="continue-button" (click)="onAccept()">
+        Aceptar viaje
+      </ion-button>
+    
+   
+  </div>
+</ion-content>
+
+

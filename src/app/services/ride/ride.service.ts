@@ -1,9 +1,10 @@
 import { Injectable, NgZone } from '@angular/core';
-import { Observable, Subject, map } from 'rxjs';
+import { Observable, Subject, map, firstValueFrom } from 'rxjs';
 import { Timestamp } from '@angular/fire/firestore';
 import { HttpClient } from '@angular/common/http';
 import { APIService } from '../api/api.service';
 import { environment } from '../../../environments/environment';
+import { IncomingRideComponent } from 'src/app/components/incoming-ride/incoming-ride.component';
 import { UtilService } from '../util/util.service';
 import { PaypalService } from '../api/paypal.service';
 import { InitUserProvider } from '../inituser/inituser.service';
@@ -14,6 +15,7 @@ import { Ride } from '../../models/ride';
 //import { BookingConfirmationComponent } from 'src/app/components/booking-confirmation/booking-confirmation.component';
 import { GmapService } from 'src/app/services/gmap/gmap.service';
 import { Capacitor } from '@capacitor/core';
+import { App } from '@capacitor/app';
 import { Geolocation } from '@capacitor/geolocation';
 import { Storage } from '@ionic/storage-angular';
 import { MapDirectionsService ,GoogleMap} from '@angular/google-maps';
@@ -155,6 +157,37 @@ export class RideService {
     this.userCard = false;
     this.loggedInUser = this.userProvider.getUserData();
     this.newRideInfo();
+    this.setupAppStateListener();
+  }
+
+  private setupAppStateListener() {
+    if (Capacitor.isNativePlatform()) {
+      console.log('📱 Setting up App State listener for iOS/Android...');
+      
+      App.addListener('appStateChange', ({ isActive }) => {
+        console.log('📱 App state changed. Active:', isActive);
+        
+        if (isActive) {
+          console.log('✅ App is now in FOREGROUND');
+          
+          // If driver is available and no ride is accepted, ensure listener is running
+          if (this.loggedInUser.available && !this.rideStage.rideAccepted) {
+            if (!this.listenerId) {
+              console.log('⚠️ Listener was stopped! Restarting...');
+              this.setIncomingRideListener();
+            } else {
+              console.log('✅ Listener is already running, ID:', this.listenerId);
+            }
+          }
+        } else {
+          console.log('⏸️ App moved to BACKGROUND');
+          // Optionally keep the listener running in background for iOS
+          // or clear it to save battery
+        }
+      });
+      
+      console.log('✅ App State listener configured');
+    }
   }
 
 
@@ -232,7 +265,13 @@ export class RideService {
    */
   getOrigin(rideInfo: any): Observable<GeocodeResponse> {
     const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${rideInfo.origin_lat},${rideInfo.origin_lng}&key=${this.key}`;
-    return this.http.get<GeocodeResponse>(url);
+    console.log(`🌐 Getting origin address for: ${rideInfo.origin_lat},${rideInfo.origin_lng}`);
+    return this.http.get<GeocodeResponse>(url).pipe(
+      map(response => {
+        console.log(`✅ Origin geocode response received:`, response);
+        return response;
+      })
+    );
   }
 
   getDestination2(rideInfo: any): Promise<any> {
@@ -251,7 +290,13 @@ export class RideService {
    */
   getDestination(rideInfo: any): Observable<GeocodeResponse> {
     const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${rideInfo.destination_lat},${rideInfo.destination_lng}&key=${this.key}`;
-    return this.http.get<GeocodeResponse>(url);
+    console.log(`🌐 Getting destination address for: ${rideInfo.destination_lat},${rideInfo.destination_lng}`);
+    return this.http.get<GeocodeResponse>(url).pipe(
+      map(response => {
+        console.log(`✅ Destination geocode response received:`, response);
+        return response;
+      })
+    );
   }
 
   async setRideInfo(ride: any) {
@@ -638,58 +683,199 @@ getRideStats() {
   );
 }
 
-setIncomingRideListener() {
-  console.log('set listener');
-  this.listenerId = setInterval(() => {
-    console.log('ride check......');
+setIncomingRideListener(triggerImmediate: boolean = false) {
+  console.log('🎧 Setting up incoming ride listener...');
+  console.log('🔄 Check interval: 10 seconds');
+  
+  // Clear any existing listener first
+  if (this.listenerId) {
+    console.log('⚠️ Clearing existing listener before creating new one');
+    this.clearIncomingRideListener();
+  }
+  
+  const check = () => {
+    console.log('🔍 ride check......', new Date().toLocaleTimeString());
     this.incomingRidesCheck();
-  }, 7000);
+  };
+
+  this.listenerId = setInterval(() => {
+    check();
+  }, 10000); // Increased to 10 seconds to reduce load
+
+  if (triggerImmediate) {
+    console.log('🚀 Triggering immediate ride check');
+    check();
+  }
+  
+  console.log('✅ Listener ID:', this.listenerId);
 }
 
 
 clearIncomingRideListener() {
-  clearInterval(this.listenerId);
-  this.listenerId = null;
+  if (this.listenerId) {
+    console.log('🛑 Clearing incoming ride listener, ID:', this.listenerId);
+    clearInterval(this.listenerId);
+    this.listenerId = null;
+    console.log('✅ Listener cleared successfully');
+  } else {
+    console.log('⚠️ No listener to clear');
+  }
 }
 
 incomingRidesCheck() {
   if (!this.rideStage.rideAccepted && this.loggedInUser.available) {
-    this.api.rideCheck().subscribe(ride => {
-      console.log(ride);
-      if (ride) {
-        this.clearIncomingRideListener();
-        this.showRidePopup(ride);
-      } else {
-        console.log('No New Rides Booked');
+    console.log('✅ Conditions met: rideAccepted=false, available=true');
+    console.log('📡 Calling api.rideCheck()...');
+    
+    this.api.rideCheck().subscribe({
+      next: (ride) => {
+        console.log('📥 rideCheck response received:', ride ? 'Ride found!' : 'No rides');
+        if (ride) {
+          console.log('🎉 New ride found, ID:', ride.id);
+          this.clearIncomingRideListener();
+          this.showRidePopup(ride);
+        } else {
+          console.log('⏳ No New Rides Booked - continuing to listen...');
+        }
+      },
+      error: (error) => {
+        console.error('❌ Error in rideCheck:', error);
+        console.error('❌ Error message:', error.message || 'Unknown error');
+        console.error('❌ Error stack:', error.stack);
+        
+        // Don't clear the listener on error, let it retry on next interval
+        console.log('🔄 Will retry on next check interval...');
+        
+        // If it's a network error, log it specifically
+        if (error.message && error.message.includes('network')) {
+          console.error('🌐 Network error detected - check internet connection');
+        }
+      },
+      complete: () => {
+        console.log('✅ rideCheck observable completed');
       }
     });
+  } else {
+    console.log('⏭️ Skipping ride check:');
+    console.log('   - rideAccepted:', this.rideStage.rideAccepted);
+    console.log('   - available:', this.loggedInUser.available);
   }
 }
 async showRidePopup(ride: any) {
+  console.log('🆕 Incoming ride detected:', ride);
+  try {
+    const pickupAddress = await this.setAddress(
+      { lat: ride.origin_lat, lng: ride.origin_lng },
+      'pickup'
+    );
+    const destinationAddress = await this.setAddress(
+      { lat: ride.destination_lat, lng: ride.destination_lng },
+      'destination'
+    );
 
-  console.log(ride);
-  const address = await this.setAddress({ lat: ride.origin_lat, lng: ride.origin_lng }, 'pickup');
+    const driverLocation = await this.getDriverLocationForPopup();
 
-  await this.util.presentAlert2( 'Alert!', `New Ride at :${address}`,
-      async () => { 
-      // accept ride  function
+    const rideForModal = {
+      ...ride,
+      origin_address:
+        pickupAddress ||
+        ride.origin_address ||
+        this.originAddress ||
+        'Ubicación del pasajero',
+      destination_address:
+        destinationAddress ||
+        ride.destination_address ||
+        this.destinationAddress ||
+        'Destino',
+      totalFare: Number(ride.totalFare ?? ride.fare ?? 0),
+    };
+
+    const modal = await this.util.createModal(
+      IncomingRideComponent,
+      {
+        ride: rideForModal,
+        driverLocation,
+      },
+      'incoming-ride-modal'
+    );
+
+    this.rideAlert = modal;
+    await modal.present();
+
+    const { data } = await modal.onWillDismiss();
+    this.rideAlert = null;
+
+    if (data?.action === 'accept') {
       const loader = await this.util.createLoader('Please wait...');
       await loader.present();
-      this.api.acceptRide(ride.id, this.loggedInUser.id)
-        .subscribe(res => {
+
+      this.api.acceptRide(ride.id, this.loggedInUser.id).subscribe({
+        next: (res) => {
           loader.dismiss();
-          this.rideAlert = null;
-          if (res.message[0]) {  this.setRideInfo(ride);  } 
-          else { this.clearRideInfo(); }
+          if (res.message[0]) {
+            this.setRideInfo(ride);
+          } else {
+            this.clearRideInfo();
+          }
+        },
+        error: (error) => {
+          loader.dismiss();
+          console.error('❌ Error accepting ride:', error);
+          this.handleRideDeclined();
+        },
+      });
+    } else {
+      console.log('❌ Ride declined or modal dismissed by the driver');
+      this.handleRideDeclined();
+    }
+  } catch (error) {
+    console.error('❌ Error preparing ride popup:', error);
+    this.handleRideDeclined();
+  }
+}
 
-        });
-    },     // OK handler
-    () => { 
-      console.log('❌ Cancel booking');
-      this.setIncomingRideListener();
-     }      // Cancel handler
-  );
+private async getDriverLocationForPopup(): Promise<{ lat: number; lng: number }> {
+  if (
+    this.mapData?.driverLocation?.lat !== undefined &&
+    this.mapData?.driverLocation?.lng !== undefined
+  ) {
+    return this.mapData.driverLocation;
+  }
 
+  if (
+    this.loggedInUser?.location_lat !== undefined &&
+    this.loggedInUser?.location_lng !== undefined
+  ) {
+    return {
+      lat: this.loggedInUser.location_lat,
+      lng: this.loggedInUser.location_lng,
+    };
+  }
+
+  try {
+    const coords = await this.util.getCurrentLatLng();
+    if (coords) {
+      return { lat: coords.latitude, lng: coords.longitude };
+    }
+  } catch (error) {
+    console.warn('⚠️ Unable to resolve current driver location', error);
+  }
+
+  const fallbackLat =
+    this.mapData?.lat ??
+    this.loggedInUser?.location_lat ??
+    environment.DEFAULT_LAT;
+  const fallbackLng =
+    this.mapData?.lng ??
+    this.loggedInUser?.location_lng ??
+    environment.DEFAULT_LNG;
+
+  return { lat: fallbackLat, lng: fallbackLng };
+}
+
+private handleRideDeclined(): void {
+  this.rideStage.rideAccepted = false;
+  this.setIncomingRideListener(true);
 }
 
 
@@ -875,6 +1061,18 @@ async clearRideInfoWhenUserCancel() {
   this.rideAlert = null;
   this.load();
   this.clearRideStatusListener();
+}
+
+
+async getClientName(clientId : any): Promise<string> {
+  try {
+    console.log('(getClientName   Client ID:', clientId);
+    const ride = await firstValueFrom(this.api.getRide(clientId));
+    return (ride && ride['name']) ? ride['name'] : 'User not found';
+  } catch (error) {
+    console.error('Error fetching client name:', error);
+    return 'User not found';
+  }
 }
 
 }

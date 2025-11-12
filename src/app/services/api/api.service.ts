@@ -39,12 +39,17 @@ export class APIService implements OnDestroy {
 
 
   logIn(username: string, password: string): Observable<any> {
+    console.log('🔵 APIService.logIn() called for:', username);
     
     return new Observable((observer) => {
     this.auth.login(username, password)
        .then(user => {
+         console.log('✅ APIService.logIn() - Firebase login successful, uid:', user.uid);
          observer.next({ id: user.uid });
        }).catch(err => {
+         console.error('❌ APIService.logIn() - Firebase login error:', err);
+         console.error('Error code:', err.code);
+         console.error('Error message:', err.message);
          observer.error(err);
        }); 
    });  

@@ -29,11 +29,13 @@ import { ChangePaymentComponent } from './components/change-payment/change-payme
 import { SetLocationComponent } from './components/set-location/set-location.component';  
 import { RequestRideComponent } from  './components/request-ride/request-ride.component';  
 import { PhotoComponent } from './components/photo/photo.component';
+import { IncomingRideComponent } from './components/incoming-ride/incoming-ride.component';
 
 // AngularFire
-import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
+import { provideFirebaseApp, initializeApp, getApp } from '@angular/fire/app';
 import { provideAuth, getAuth } from '@angular/fire/auth';
-import { provideFirestore, getFirestore } from '@angular/fire/firestore';
+import { provideFirestore, getFirestore, enableIndexedDbPersistence, enableMultiTabIndexedDbPersistence, initializeFirestore } from '@angular/fire/firestore';
+import { provideStorage, getStorage } from '@angular/fire/storage';
 
 //Environment
 import { environment } from '../environments/environment';
@@ -54,13 +56,16 @@ import player from 'lottie-web';
     CarInfoComponent,ChangePasswordComponent,ChangeUserComponent,SettingAccountComponent,
     PickupComponent,Payment2Component,EditCardComponent,ChangePaymentComponent,
     SetLocationComponent,RequestRideComponent,
+    IncomingRideComponent,
    // MapComponent
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
   imports: [
     IonicStorageModule.forRoot(),
     BrowserModule,
-    IonicModule.forRoot(),
+    IonicModule.forRoot({
+      swipeBackEnabled: false,
+    }),
     AppRoutingModule,
     HttpClientModule,
     GoogleMapsModule,NgxPayPalModule,
@@ -73,8 +78,16 @@ import player from 'lottie-web';
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideAuth(() => getAuth()),
+    provideAuth(() => {
+      const auth = getAuth();
+      // Deshabilitar persistencia para iOS
+      if (typeof indexedDB === 'undefined') {
+        console.log('⚠️ IndexedDB not available, Auth will use memory-only persistence');
+      }
+      return auth;
+    }),
     provideFirestore(() => getFirestore()),
+    provideStorage(() => getStorage()),
     provideNgxMask(),
     provideLottieOptions({ player: () => player }),
     GmapService,//LaunchNavigator,
@@ -88,7 +101,7 @@ import player from 'lottie-web';
     BookingConfirmationComponent,
     PickupComponent,SettingAccountComponent,LegalComponent,AddCardComponent,PaymentComponent,CameraUploadComponent,
     CarInfoComponent,ChangePasswordComponent,ChangeUserComponent,SettingAccountComponent,EditCardComponent,
-    Payment2Component,ChangePaymentComponent,SetLocationComponent,RequestRideComponent,PhotoComponent
+    Payment2Component,ChangePaymentComponent,SetLocationComponent,RequestRideComponent,PhotoComponent,IncomingRideComponent
   ],
   bootstrap: [AppComponent],
 })

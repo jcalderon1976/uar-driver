@@ -50,7 +50,7 @@
           <img [src]="loggedInUser.profile_img || 'assets/images/userDefault.png'" />
         </ion-avatar>
         <ion-label class="ion-text-capitalize"> <b>{{loggedInUser.name}}</b></ion-label>
-        <span fill="outline" slot="end"> <b>$ {{rideService.stats.totalFare || 0}}</b></span>
+        <span fill="outline" slot="end"> <b>$ {{ rideService.stats.totalFare | number:'1.0-2' }}</b></span>
       </ion-item>
 
       <ion-card-content color="primary" class="ion-no-margin">
@@ -63,11 +63,11 @@
           <div class="driverDetails">
             <ion-icon name="speedometer" class="driverStatusIcons"></ion-icon>
             <ion-label class="textColor textBold detailsLabel ion-text-uppercase">
-              {{rideService.stats.totalDistance || 0}} KM</ion-label>
+              {{rideService.stats.totalDistance | number:'1.0-2'}} KM</ion-label>
             <p class="detailText ion-text-uppercase">Total Distance</p>
           </div>
           <div class="driverDetails">
-            <ion-icon name="time" class="driverStatusIcons"></ion-icon>
+            <ion-icon name="ribbon-outline" class="driverStatusIcons"></ion-icon>
             <ion-label class="textColor textBold detailsLabel">{{rideService.stats.totalRides || 0}}</ion-label>
             <p class="detailText ion-text-uppercase">Total Jobs</p>
           </div>

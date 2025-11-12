@@ -40,7 +40,7 @@ export class DocumentManagementPage implements OnInit {
     this.util.goForward(`/${item}`);
   }
   goBack() {
-    this.router.navigate(['/tabs/tab4'], { replaceUrl: true });
+    this.router.navigate(['/tabs/tab4']);
   }
   
 }

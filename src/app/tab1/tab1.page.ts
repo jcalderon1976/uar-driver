@@ -1,4 +1,4 @@
-import { Component, OnInit,AfterViewInit, ViewChild ,ElementRef} from '@angular/core';
+import { Component, OnInit,AfterViewInit, ViewChild ,ElementRef, OnDestroy} from '@angular/core';
 import { MenuController } from '@ionic/angular';
 import { RideService } from '../services/ride/ride.service';
 import { APIService } from '../services/api/api.service';
@@ -9,9 +9,10 @@ import { Loader } from '@googlemaps/js-api-loader';
 import { Geolocation } from '@capacitor/geolocation';
 import { environment } from 'src/environments/environment';
 import { IonHeader, IonFab } from "@ionic/angular/standalone";
-import { map, Observable } from 'rxjs';
+import { map, Observable, Subscription, firstValueFrom } from 'rxjs';
 import { MapDirectionsService ,GoogleMap} from '@angular/google-maps';
-
+import { DocumentData, QueryDocumentSnapshot } from 'firebase/firestore';
+import { HistoryRide } from '../models/historyRides';
 
 declare var google: any;
 
@@ -22,7 +23,7 @@ declare var google: any;
   styleUrls: ['tab1.page.scss'],
   standalone: false,
 })
-export class Tab1Page implements OnInit {
+export class Tab1Page implements OnInit, OnDestroy {
   @ViewChild('toolbar', { read: ElementRef }) toolbarRef!: ElementRef;
   @ViewChild('googleMap', { static: false }) mapRef!: GoogleMap;
   map!: google.maps.Map;
@@ -73,6 +74,15 @@ export class Tab1Page implements OnInit {
     } 
   };
 
+  public walletData: any = [];
+  private lastDoc: QueryDocumentSnapshot<DocumentData> | null = null;
+  private pageSize = 5;
+  loadingMore = false;
+  public rides: HistoryRide[] = [];
+  private userSubscription?: Subscription;
+  private onlineSessionStart: number | null = null;
+  private onlineTimerId?: ReturnType<typeof setInterval>;
+
   constructor(
     private menuCtrl: MenuController,
     public rideService: RideService,
@@ -81,21 +91,26 @@ export class Tab1Page implements OnInit {
     private util: UtilService,
     private mapDirectionsService: MapDirectionsService,
   ) {
-    console.log('Tab1Page constructor');
+          console.log('Tab1Page constructor');
           
           this.loggedInUser = this.userProvider.getUserData();
           this.driverAvailable = this.loggedInUser.available;
+          this.refreshLoggedInUser();
           this.getcurrentLocations();
          
           console.log('this.rideService.rideStage', this.rideService.rideStage);
           console.log('this.rideService', this.rideService);
 
           this.rideStage = this.rideService.rideStage;
+          this.loadOnlineStats();
+          this.getHistory(this.loggedInUser.id);
   }
 
 
   async ngOnInit() {
         console.log('ngOnInit');
+        this.refreshLoggedInUser();
+        this.loadOnlineStats();
     }
 
     
@@ -162,9 +177,47 @@ export class Tab1Page implements OnInit {
 
  
 
+  ionViewDidEnter() {
+    console.log('🔵 Tab1 - ionViewDidEnter');
+    console.log('🔍 Checking if listener needs to be restarted...');
+    console.log('   - Driver available:', this.loggedInUser.available);
+    console.log('   - Ride accepted:', this.rideStage.rideAccepted);
+    console.log('   - Current listener ID:', this.rideService.listenerId);
+    
+    // Refresh user data
+    this.loggedInUser = this.userProvider.getUserData();
+    this.driverAvailable = this.loggedInUser.available;
+    this.refreshLoggedInUser();
+    this.loadOnlineStats();
+    
+    // If driver is available and no ride is accepted, ensure listener is running
+    if (this.loggedInUser.available && !this.rideStage.rideAccepted) {
+      if (!this.rideService.listenerId) {
+        console.log('⚠️ Listener was cleared! Restarting...');
+        this.rideService.setIncomingRideListener();
+      } else {
+        console.log('✅ Listener is already running');
+      }
+    } else {
+      console.log('⏭️ Not starting listener (driver not available or ride already accepted)');
+    }
+
+    if (this.driverAvailable) {
+      this.startOnlineTracking();
+    } else {
+      this.stopOnlineTracking();
+    }
+
+    this.loggedInUser = this.userProvider.getUserData();
+    this.getHistory(this.loggedInUser.id);
+  }
+
   ionViewWillLeave() {
+    console.log('🔴 Tab1 - ionViewWillLeave');
+    console.log('🛑 Clearing listeners temporarily (will restart on return if needed)');
     this.rideService.clearIncomingRideListener();
     this.rideService.clearRideStatusListener();
+    this.clearOnlineTimer();
   }
 
   async cancelRide() {
@@ -181,8 +234,10 @@ export class Tab1Page implements OnInit {
   driverStatusChange(event: any) {
     if (event.detail.checked) {
       if (!this.listenerId) { this.rideService.setIncomingRideListener(); }
+      this.startOnlineTracking();
     } else {
       this.rideService.clearIncomingRideListener();
+      this.stopOnlineTracking();
     }
     this.loggedInUser.available = event.detail.checked;
     this.api.updateDriverData(this.loggedInUser.id, { available: event.detail.checked })
@@ -289,6 +344,259 @@ export class Tab1Page implements OnInit {
     }); 
   }
 
+
+  async getHistory(uid: any): Promise<void> {
+    const loader = await this.util.createLoader('Loading Ride History ...');
+    await loader.present();
+
+    try {
+      const {
+        rides,
+        totalFare,
+        totalDistance,
+        totalRides,
+        lastDoc,
+      } = await this.collectDriverHistory(uid);
+
+      this.walletData = rides;
+      this.rideService.stats.totalFare = totalFare;
+      this.rideService.stats.totalDistance = totalDistance;
+      this.rideService.stats.totalRides = totalRides;
+      this.lastDoc = lastDoc;
+
+      this.loadTodayStats();
+    } catch (error) {
+      console.error('❌ Tab1: Error getting history:', error);
+      this.walletData = [];
+      this.rideService.stats.totalFare = 0;
+      this.rideService.stats.totalDistance = 0;
+      this.rideService.stats.totalRides = 0;
+    } finally {
+      await loader.dismiss();
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.userSubscription?.unsubscribe();
+    this.clearOnlineTimer();
+  }
+
+  private refreshLoggedInUser(): void {
+    this.userSubscription?.unsubscribe();
+
+    this.userSubscription = this.api.getUser().subscribe({
+      next: (userData) => {
+        if (userData) {
+          const merged = {
+            ...this.loggedInUser,
+            ...userData,
+            id: this.loggedInUser?.id ?? userData.id ?? '',
+          } as Driver;
+
+          this.loggedInUser = merged;
+          this.driverAvailable = this.loggedInUser.available;
+        }
+      },
+      error: (err) => console.error('Error refreshing driver info:', err)
+    });
+  }
+
+  private loadTodayStats(): void {
+    if (!this.loggedInUser?.id) {
+      return;
+    }
+
+    this.api.getTodayRideStats(this.loggedInUser.id).subscribe({
+      next: (stats) => {
+        this.rideService.stats = {
+          ...this.rideService.stats,
+          ...stats,
+        };
+      },
+      error: (err) => {
+        console.error('Error loading ride stats:', err);
+      },
+    });
+  }
+
+  private async collectDriverHistory(
+    userId: string
+  ): Promise<{
+    rides: HistoryRide[];
+    totalFare: number;
+    totalDistance: number;
+    totalRides: number;
+    lastDoc: QueryDocumentSnapshot<DocumentData> | null;
+  }> {
+    let cursor: QueryDocumentSnapshot<DocumentData> | null = null;
+    let aggregated: HistoryRide[] = [];
+    let totalFare = 0;
+    let totalDistance = 0;
+
+    while (true) {
+      const page = await firstValueFrom<HistoryRide[]>(
+        this.api.getRideHistoryPaginated(
+          userId,
+          'createdAt',
+          this.pageSize,
+          cursor
+        )
+      );
+
+      if (!page || page.length === 0) {
+        break;
+      }
+
+      aggregated = this.mergeRidesById(aggregated, page);
+      totalFare += page.reduce(
+        (sum: number, ride: HistoryRide) =>
+          sum + Number(ride.totalFare || 0),
+        0
+      );
+      totalDistance += page.reduce(
+        (sum: number, ride: HistoryRide) =>
+          sum + Number(ride.distance || 0),
+        0
+      );
+
+      const snapshot = (page[page.length - 1]['__snapshot__'] ??
+        null) as QueryDocumentSnapshot<DocumentData> | null;
+      cursor = snapshot ?? cursor;
+
+      if (!snapshot || page.length < this.pageSize) {
+        break;
+      }
+    }
+
+    return {
+      rides: aggregated,
+      totalFare,
+      totalDistance,
+      totalRides: aggregated.length,
+      lastDoc: cursor,
+    };
+  }
+
+  private mergeRidesById(
+    existing: HistoryRide[],
+    incoming: HistoryRide[]
+  ): HistoryRide[] {
+    const rideMap = new Map<string, HistoryRide>();
+
+    existing.forEach((ride) => {
+      if (ride?.id) {
+        rideMap.set(ride.id, ride);
+      }
+    });
+
+    incoming.forEach((ride) => {
+      if (ride?.id) {
+        rideMap.set(ride.id, ride);
+      }
+    });
+
+    return Array.from(rideMap.values());
+  }
+
+  private loadOnlineStats(): void {
+    const todayKey = this.getTodayKey();
+    const storedDate = localStorage.getItem('driverOnlineDate');
+
+    if (storedDate && storedDate !== todayKey) {
+      this.clearOnlineStorage(storedDate);
+    }
+
+    localStorage.setItem('driverOnlineDate', todayKey);
+
+    const accumulatedMs = parseInt(localStorage.getItem(this.getAccumulatedKey(todayKey)) ?? '0', 10);
+    this.rideService.stats.hoursOnline = this.msToHours(accumulatedMs);
+
+    const startValue = localStorage.getItem(this.getStartKey(todayKey));
+    if (startValue) {
+      this.onlineSessionStart = parseInt(startValue, 10);
+      this.startOnlineTimer();
+    } else {
+      this.onlineSessionStart = null;
+      this.clearOnlineTimer();
+    }
+  }
+
+  private startOnlineTracking(): void {
+    const todayKey = this.getTodayKey();
+    localStorage.setItem('driverOnlineDate', todayKey);
+
+    if (!this.onlineSessionStart) {
+      this.onlineSessionStart = Date.now();
+      localStorage.setItem(this.getStartKey(todayKey), this.onlineSessionStart.toString());
+    }
+
+    this.startOnlineTimer();
+  }
+
+  private stopOnlineTracking(clearSession: boolean = true): void {
+    const todayKey = this.getTodayKey();
+    const accumKey = this.getAccumulatedKey(todayKey);
+
+    if (this.onlineSessionStart) {
+      const accumulatedMs = parseInt(localStorage.getItem(accumKey) ?? '0', 10);
+      const sessionMs = Date.now() - this.onlineSessionStart;
+      const totalMs = accumulatedMs + sessionMs;
+
+      localStorage.setItem(accumKey, totalMs.toString());
+      this.rideService.stats.hoursOnline = this.msToHours(totalMs);
+    }
+
+    this.clearOnlineTimer();
+
+    if (clearSession) {
+      localStorage.removeItem(this.getStartKey(todayKey));
+      this.onlineSessionStart = null;
+    }
+  }
+
+  private startOnlineTimer(): void {
+    if (this.onlineTimerId) {
+      return;
+    }
+
+    this.onlineTimerId = setInterval(() => {
+      const todayKey = this.getTodayKey();
+      const accumulatedMs = parseInt(localStorage.getItem(this.getAccumulatedKey(todayKey)) ?? '0', 10);
+      const sessionMs = this.onlineSessionStart ? Date.now() - this.onlineSessionStart : 0;
+      const totalMs = accumulatedMs + sessionMs;
+
+      this.rideService.stats.hoursOnline = this.msToHours(totalMs);
+    }, 60_000);
+  }
+
+  private clearOnlineTimer(): void {
+    if (this.onlineTimerId) {
+      clearInterval(this.onlineTimerId);
+      this.onlineTimerId = undefined;
+    }
+  }
+
+  private getTodayKey(): string {
+    const now = new Date();
+    return now.toISOString().split('T')[0];
+  }
+
+  private getAccumulatedKey(dateKey: string): string {
+    return `driverOnlineAccumulated_${dateKey}`;
+  }
+
+  private getStartKey(dateKey: string): string {
+    return `driverOnlineStart_${dateKey}`;
+  }
+
+  private clearOnlineStorage(dateKey: string): void {
+    localStorage.removeItem(this.getAccumulatedKey(dateKey));
+    localStorage.removeItem(this.getStartKey(dateKey));
+  }
+
+  private msToHours(ms: number): number {
+    return parseFloat((ms / 3_600_000).toFixed(2));
+  }
 
 }
 

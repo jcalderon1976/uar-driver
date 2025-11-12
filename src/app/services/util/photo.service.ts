@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Camera, CameraResultType, CameraSource, Photo } from '@capacitor/camera';
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { Firestore, doc, setDoc,getDoc, collection, addDoc as firestoreAddDoc } from '@angular/fire/firestore';
+import { Storage, ref, uploadBytes, getDownloadURL } from '@angular/fire/storage';
+import { Firestore, doc, setDoc, getDoc, collection, addDoc as firestoreAddDoc } from '@angular/fire/firestore';
 
 @Injectable({
     providedIn: 'root',
@@ -10,9 +10,19 @@ export class PhotoService {
 
     imageUrl: string | null = null;
 
-    constructor(private firestore: Firestore) {}
-    
-    storage = getStorage();
+    constructor(
+        private firestore: Firestore,
+        private storage: Storage
+    ) {
+        console.log('📸 PhotoService initialized');
+        console.log('🔥 Storage instance:', this.storage);
+        console.log('🔥 Firestore instance:', this.firestore);
+        if (this.storage && (this.storage as any).app) {
+            console.log('✅ Storage connected to app:', (this.storage as any).app.name);
+        } else {
+            console.error('❌ Storage not properly initialized!');
+        }
+    }
   
     async tomarFotoYSubir(photoName: string): Promise<any> {
 
@@ -73,9 +83,8 @@ export class PhotoService {
     }
 
     async uploadPhoto(blob: Blob) {
-        const storage = getStorage();
         const filePath = `photos/${Date.now()}.jpeg`;
-        const photoRef = ref(storage, filePath);
+        const photoRef = ref(this.storage, filePath);
 
         await uploadBytes(photoRef, blob)
             .then((snapshot) => {

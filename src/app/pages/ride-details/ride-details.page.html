@@ -23,7 +23,7 @@
         <ion-card-content>
           <br/>
           <div class="contentHead">
-            <span *ngIf="rideInfo && rideInfo.createdAt"> {{ rideInfo.createdAt.toDate()  | date   }}</span>
+            <span *ngIf="rideInfo && rideInfo.createdAt">{{ rideInfo.createdAt.toDate()  | date:'MMM d, y · h:mm a' }}</span>
             <span *ngIf="!rideInfo || !rideInfo.createdAt">Date not available</span>
             <span>$ {{ rideInfo.totalFare}}</span>
           </div>

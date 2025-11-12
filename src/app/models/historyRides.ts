@@ -11,6 +11,7 @@ export interface HistoryRide{
       destination_address: string;
       distance: number;
       fare: number;
+      totalFare: number;
       totalFee: number;
       clientId: number;
       driverId: number;

@@ -8,10 +8,10 @@
     <ion-row>
       <div class="week_days">
         <div *ngFor="let week of monthDays; let i = index"
-          [ngClass]="selected == i ? 'weekdays_col' : 'defaultClass'" (click)="weekChecked(week)">
+          [ngClass]="selectedIndex === i ? 'weekdays_col' : 'defaultClass'" (click)="weekChecked(week, i)">
           <ion-label class="ion-text-center">
-            <h6 [ngClass]="selected == i ? 'header_Para_selected' : 'header_Para'"  >{{ week.day }}</h6>
-            <h6 [ngClass]="selected == i ? 'header_Para_selected' : 'header_Para'"  >{{ week.date }}</h6>
+            <h6 [ngClass]="selectedIndex === i ? 'header_Para_selected' : 'header_Para'"  >{{ week.day }}</h6>
+            <h6 [ngClass]="selectedIndex === i ? 'header_Para_selected' : 'header_Para'"  >{{ week.date }}</h6>
           </ion-label>
         </div>
       </div>
@@ -21,32 +21,28 @@
 
 <ion-content class="tab2Header">
    
-  <ion-row class="ion-padding-vertical">
-    <ion-col size="6">
-      <ion-card class="car_card">
-        <ion-item class="car-item">
-          <ion-thumbnail slot="start" class="card_jobEarn">
-            <ion-img  src="assets/images/cab.png"></ion-img>
-          </ion-thumbnail>
-          <ion-label>
-            <p style="color:white;">Total Jobs</p>
+  <ion-row class="summary-row ion-padding-horizontal ion-padding-vertical">
+    <ion-col size="6" size-md="6" class="summary-col">
+      <ion-card class="summary-card car_card">
+        <div class="summary-content">
+          <ion-img class="summary-icon" src="assets/images/cab.png" alt="Total jobs icon"></ion-img>
+          <div class="summary-text">
+            <p>Total Jobs</p>
             <h2 *ngIf="rides && rides.length">{{ rides.length}}</h2>
             <h2 *ngIf="!rides || !rides.length">0</h2>
-          </ion-label>
-        </ion-item>
+          </div>
+        </div>
       </ion-card>
     </ion-col>
-    <ion-col size="6">
-      <ion-card class="usd_card">
-        <ion-item class="usd_item">
-          <ion-thumbnail slot="start" class="card_jobEarn">
-            <ion-img    src="assets/images/badge.png"></ion-img>
-          </ion-thumbnail>
-          <ion-label>
-            <p style="color:white;">Earned</p>
-            <h2>${{totalEarning}}</h2>
-          </ion-label>
-        </ion-item>
+    <ion-col size="6" size-md="6" class="summary-col">
+      <ion-card class="summary-card usd_card">
+        <div class="summary-content">
+          <ion-img class="summary-icon" src="assets/images/badge.png" alt="Total earnings icon"></ion-img>
+          <div class="summary-text">
+            <p>Earned</p>
+            <h2>${{totalEarning | number:'1.2-2' }}</h2>
+          </div>
+        </div>
       </ion-card>
     </ion-col>
   </ion-row>
@@ -65,14 +61,14 @@
             <div class="date location-text">
               <ion-chip color="medium">{{ ride.distance }} km</ion-chip>
               <ion-icon name="calendar" color="favorite"></ion-icon>
-               <ion-text>
-                 <span *ngIf="ride && ride.createdAt"> {{ ride.createdAt.toDate()  | date }}</span>
+               <ion-text class="ride-datetime">
+                 <span *ngIf="ride && ride.createdAt"> {{ ride.createdAt.toDate()  | date:'MMM d, y · h:mm a' }}</span>
                  <span *ngIf="!ride || !ride.createdAt">Date not available</span>
                </ion-text> 
              </div>
           </ion-col>
           <ion-col size="3">
-            <div class="price" > $ {{ ride.fare }}   </div>
+            <div class="price" > $ {{ ride.totalFare }}   </div>
           </ion-col>
        </ion-row>
 

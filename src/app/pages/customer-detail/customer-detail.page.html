@@ -14,53 +14,50 @@
     </google-map>   
   </div>
   <ion-card class="userCard ion-no-margin" *ngIf="rideService.rideUser.id">
-
-
-
-
-    <ion-card-header color="light" class="userCardHeader dFlex">
-              <ion-item lines="none">
-                <ion-avatar slot="start" class="avatarDriver">
-                  <img [src]="rideService.rideUser.profile_img" />
-                </ion-avatar>
-                <ion-label class="ion-text-capitalize"> <b>{{rideService.rideUser.name}}</b></ion-label>
-                <span fill="outline" slot="end"> <b>$ {{rideService.rideInfo.totalFare || 0}} * {{rideService.rideInfo.distance || 0}} KM</b></span>
-              </ion-item>
+    <ion-card-header color="light" class="userCardHeader">
+      <div class="header-content">
+        <ion-avatar class="avatarDriver">
+          <img [src]="rideService.rideUser.profile_img || 'assets/images/userDefault.png'" />
+        </ion-avatar>
+        <div class="header-text">
+          <h2 class="driver-name">
+            {{ rideService.rideUser.name }}
+          </h2>
+          <p class="driver-meta">
+            {{ rideService.rideUser.phone || rideService.rideUser.email }}
+          </p>
+        </div>
+        <div class="fare-info">
+          <span class="fare-amount">
+            ${{ (rideService.rideInfo.totalFare || 0) | number:'1.2-2' }}
+          </span>
+          <span class="fare-distance">
+            {{ rideService.rideInfo.distance || 0 }} km
+          </span>
+        </div>
+      </div>
     </ion-card-header>
 
     <ion-card-content color="light" class="ion-no-margin">
       <div class="borderBottom paddingVertical">
-        <div class="detailText fontSmall" class="ion-text-uppercase">Pick Up</div>
-        <ion-label class="detailsLabel textColor textBold">
-          {{mapData.originAddress}}
-        </ion-label>
+        <span class="section-label">Pick Up</span>
+        <p class="address-text">
+          {{ mapData.originAddress || 'Address not available' }}
+        </p>
       </div>
 
       <div class="borderBottom paddingVertical">
-        <div class="detailText fontSmall" class="ion-text-uppercase">Drop Off</div>
-        <ion-label class="detailsLabel  textColor textBold">
-          {{mapData.destinationAddress}}
-        </ion-label>
+        <span class="section-label">Drop Off</span>
+        <p class="address-text">
+          {{ mapData.destinationAddress || 'Address not available' }}
+        </p>
       </div>
 
-      <div class="borderBottom paddingVertical">
-        <div class="detailText fontSmall ion-text-uppercase">Note</div>
-        <ion-label class="detailsLabel  textColor textBold"> </ion-label>
-      </div>
-      <div class="borderBottom paddingVertical">
-        <div class="detailText fontSmall ion-text-uppercase">Trip Fare</div>
+    
 
-        <ion-list class="ion-no-padding ion-no-margin">
-          <ion-item lines="none" *ngFor="let trip of tripPayments" class="tripItems">
-            <h6 slot="start" class="detailsLabel  textColor textBold ion-no-padding ion-no-margin">{{trip.title}}</h6>
-            <span slot="end" class="textBold">${{trip.pay}}</span>
-          </ion-item>
-        </ion-list>
-      </div>
-
-      <div>
-        <ion-row>
-          <ion-col>
+      <div class="contact-actions">
+        <ion-row class="contact-row">
+          <ion-col size="12" size-md="6">
             <ion-button class="detailsBtn userCall" (click)="callUser(rideService.rideUser.phone)">
               <div class="contactDetails ion-padding">
                 <ion-icon name="call" class="contactIcon"></ion-icon>
@@ -69,7 +66,7 @@
             </ion-button>
           </ion-col>
 
-          <ion-col>
+          <ion-col size="12" size-md="6">
             <ion-button class="detailsBtn userMsg" (click)="chatWithUser()" disabled="true">
               <div class="contactDetails ion-padding">
                 <ion-icon name="chatbubbles" class="contactIcon"></ion-icon>

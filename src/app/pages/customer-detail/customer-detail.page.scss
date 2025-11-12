@@ -10,6 +10,54 @@
   margin: 0px;
   .userCardHeader {
     box-shadow: 2px 2px 2px #e8e4e4;
+    padding: 16px;
+  }
+
+  .header-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .header-text {
+    flex: 1 1 140px;
+    min-width: 140px;
+  }
+
+  .driver-name {
+    margin: 0;
+    font-size: clamp(16px, 4vw, 20px);
+    font-weight: 600;
+    color: #1c1c1e;
+  }
+
+  .driver-meta {
+    margin: 4px 0 0;
+    font-size: clamp(12px, 3.2vw, 14px);
+    color: #6c6c6c;
+    word-break: break-word;
+  }
+
+  .fare-info {
+    margin-left: auto;
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 0 0 auto;
+  }
+
+  .fare-amount {
+    font-size: clamp(18px, 5vw, 22px);
+    font-weight: 700;
+    color: #1c1c1e;
+  }
+
+  .fare-distance {
+    font-size: clamp(12px, 3vw, 14px);
+    color: #6c6c6c;
   }
   .userDetails {
     background: #ffd524;
@@ -35,6 +83,29 @@
   }
   .paddingVertical {
     padding: 10px 0px;
+  }
+
+  .section-label {
+    display: block;
+    font-size: clamp(11px, 3vw, 13px);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: #7a7a7a;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .address-text {
+    margin: 0;
+    font-size: clamp(13px, 3.6vw, 15px);
+    color: #1c1c1e;
+    line-height: 1.4;
+    word-break: break-word;
+  }
+
+  .address-note {
+    color: #6c6c6c;
+    font-style: italic;
   }
 
   .tripItems {
@@ -73,6 +144,14 @@
   }
   .userCancel {
     --background: linear-gradient(45deg, #FE695D, #AA2CE6) !important;
+  }
+
+  .contact-actions {
+    margin-top: 16px;
+  }
+
+  .contact-row {
+    row-gap: 12px;
   }
 }
 .footerTitle {
@@ -143,7 +222,7 @@ ion-title {
 .avatarDriver {
   width: 60px;
   height: 60px;
-  margin-top: 15px;
+  margin-top: 0;
   border: 1px solid #F9568D;
 }
 

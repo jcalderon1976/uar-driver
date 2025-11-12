@@ -8,6 +8,8 @@ import { AlertController } from '@ionic/angular';
 import { Driver } from '../models/driver';
 import { DocumentData, QueryDocumentSnapshot } from 'firebase/firestore';
 import { HistoryRide } from '../models/historyRides';
+import { ChangePaymentComponent } from '../components/change-payment/change-payment.component';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-tab3',
@@ -63,42 +65,107 @@ export class Tab3Page implements OnInit, OnChanges {
   async getHistory(uid: any): Promise<void> {
     const loader = await this.util.createLoader('Loading Ride History ...');
     await loader.present();
-    return new Promise((resolve, reject) => {
-         this.api.getRideHistoryPaginated( uid, 'createdAt', this.pageSize, this.lastDoc )
-           .subscribe(
-             async (rides: HistoryRide[]) => {
-               if (rides.length > 0) {
-                 
-                 this.walletData = rides;
-                 let total = 0;
-                  for (let i = 0; i < this.walletData.length; i++) {
-                    total = total + this.walletData[i].fare
-                  }
-                  this.rideService.stats.totalFare = total;
-                 
-                 // 4. Actualiza lastDoc
-                 this.lastDoc = rides[rides.length - 1][
-                   '__snapshot__'
-                 ] as QueryDocumentSnapshot<DocumentData>; // ✅ Asegurar el tipo correcto
-                 
-                 loader.dismiss();
-                // resolve();
-                
-               } else {
-                 reject('No rides found');
-               }
-             },
-             (error) => {
-               reject(error);
-             }
-           );
-       });   
+
+    try {
+      const result = await this.collectWalletHistory(uid);
+      this.walletData = result.rides;
+      this.rideService.stats.totalFare = result.total;
+      this.lastDoc = result.lastDoc;
+    } catch (error) {
+      console.error('❌ Tab3: Error getting wallet history:', error);
+      this.walletData = [];
+      this.rideService.stats.totalFare = 0;
+      this.lastDoc = null;
+    } finally {
+      await loader.dismiss();
+    }
   }
   
   ngOnInit() {
   }
   ngOnChanges() {
     console.log('change');
+  }
+
+  async openPaymentMethods() {
+    console.log('🔵 Opening Payment Methods modal');
+    const modal = await this.util.createModal(ChangePaymentComponent);
+    await modal.present();
+    
+    const { data } = await modal.onWillDismiss();
+    if (data) {
+      console.log('✅ Payment method selected:', data);
+    }
+  }
+
+  private async collectWalletHistory(
+    userId: string
+  ): Promise<{
+    rides: HistoryRide[];
+    lastDoc: QueryDocumentSnapshot<DocumentData> | null;
+    total: number;
+  }> {
+    let cursor: QueryDocumentSnapshot<DocumentData> | null = null;
+    let aggregated: HistoryRide[] = [];
+    let total = 0;
+
+    while (true) {
+      const page = await firstValueFrom<HistoryRide[]>(
+        this.api.getRideHistoryPaginated(
+          userId,
+          'createdAt',
+          this.pageSize,
+          cursor
+        )
+      );
+
+      if (!page || page.length === 0) {
+        break;
+      }
+
+      aggregated = this.mergeRidesById(aggregated, page);
+      total += page.reduce(
+        (sum: number, ride: HistoryRide) =>
+          sum + Number(ride.totalFare || 0),
+        0
+      );
+
+      const snapshot = (page[page.length - 1]['__snapshot__'] ??
+        null) as QueryDocumentSnapshot<DocumentData> | null;
+
+      cursor = snapshot ?? cursor;
+
+      if (!snapshot || page.length < this.pageSize) {
+        break;
+      }
+    }
+
+    return {
+      rides: aggregated,
+      lastDoc: cursor,
+      total,
+    };
+  }
+
+  private mergeRidesById(
+    existing: HistoryRide[],
+    incoming: HistoryRide[]
+  ): HistoryRide[] {
+    const rideMap = new Map<string, HistoryRide>();
+
+    existing.forEach((ride) => {
+      if (ride?.id) {
+        rideMap.set(ride.id, ride);
+      }
+    });
+
+    incoming.forEach((ride) => {
+      if (ride?.id) {
+        rideMap.set(ride.id, ride);
+      }
+    });
+
+    return Array.from(rideMap.values());
   }
 
 }

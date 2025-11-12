@@ -31,10 +31,11 @@ export class Tab2Page implements OnInit {
   public loader!: HTMLIonLoadingElement;
   private lastDoc: QueryDocumentSnapshot<DocumentData> | null = null;
   private pageSize = 5;
+  private hasMoreResults = false;
   loadingMore = false;
   userId!: string;
   public totalEarning: any = 0;
-  public selected: any;
+  public selectedIndex: number | null = null;
   public monthDays: any;
 
   constructor(
@@ -108,133 +109,229 @@ export class Tab2Page implements OnInit {
   }
 
   async loadHistory(userId: any) {
+    this.lastDoc = null;
+    this.hasMoreResults = false;
+    this.totalEarning = 0;
+    this.rides = [];
+    if (this.infiniteScroll) {
+      this.infiniteScroll.disabled = false;
+    }
+    this.selectedIndex = null;
+
     try {
-      await this.showLoader(); // Para la carga inicial, usamos getHistory que ya aplica el límite
+      await this.showLoader();
       await this.getHistory(userId);
-      await this.dismissLoader();
     } catch (error) {
       console.warn('No rides found o error:', error);
-      this.rides = []; // Asegúrate que se vacíe si no hay
+      this.rides = [];
+      this.totalEarning = 0;
     } finally {
-      await this.dismissLoader(); // 🔥 Siempre cerrar loader
+      await this.dismissLoader();
     }
   }
 
   async getHistory(userId: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.api.getRideHistoryPaginated( userId, 'createdAt', this.pageSize, this.lastDoc )
-        .subscribe(
-          async (rides: HistoryRide[]) => {
-            if (rides.length > 0) {
-              // 1. Convierte primero (esto NO tiene direcciones aún)
-              this.rides = this.util.latLngConverterSQL(rides);
-
-              // 2. Actualiza las direcciones
-              await this.updateRides(rides);
-
-              // 3. Asigna a this.rides después que todo esté listo
-              this.rides = rides;
-
-              for (let i = 0; i < rides.length; i++) {
-                this.totalEarning += rides[i].fare;
-              }
-              
-              // 4. Actualiza lastDoc
-              this.lastDoc = rides[rides.length - 1][
-                '__snapshot__'
-              ] as QueryDocumentSnapshot<DocumentData>; // ✅ Asegurar el tipo correcto
-
-              resolve();
-            } else {
-              reject('No rides found');
-            }
-          },
-          (error) => {
-            reject(error);
-          }
-        );
-    });
+    try {
+      const result = await this.fetchAllHistory(userId);
+      this.rides = result.rides;
+      this.totalEarning = result.totalEarning;
+      this.lastDoc = result.lastDoc;
+      this.hasMoreResults = result.hasMore;
+      if (this.infiniteScroll) {
+        this.infiniteScroll.disabled = !this.hasMoreResults;
+      }
+    } catch (error) {
+      console.error('❌ Tab2: Error getting rides:', error);
+      this.rides = [];
+      this.totalEarning = 0;
+      this.hasMoreResults = false;
+      if (this.infiniteScroll) {
+        this.infiniteScroll.disabled = true;
+      }
+      throw error;
+    }
   }
 
+  async getHistoryByDate(userId: string, date: Date): Promise<void> {
+    try {
+      const result = await this.fetchAllHistory(userId, date);
+      this.rides = result.rides;
+      this.totalEarning = result.totalEarning;
+      this.lastDoc = result.lastDoc;
+      this.hasMoreResults = result.hasMore;
+      if (this.infiniteScroll) {
+        this.infiniteScroll.disabled = !this.hasMoreResults;
+      }
+    } catch (error) {
+      console.error('❌ Tab2: Error getting rides by date:', error);
+      this.rides = [];
+      this.totalEarning = 0;
+      this.hasMoreResults = false;
+      if (this.infiniteScroll) {
+        this.infiniteScroll.disabled = true;
+      }
+      throw error;
+    }
+  }
 
-
-
-  async getHistoryByDate(userId: string, date : Date): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.api.getRideHistoryPaginatedByDate( userId, date, 'createdAt', this.pageSize, this.lastDoc )
-        .subscribe(
-          async (rides: HistoryRide[]) => {
-            if (rides.length > 0) {
-              // 1. Convierte primero (esto NO tiene direcciones aún)
-              this.rides = this.util.latLngConverterSQL(rides);
-              // 2. Actualiza las direcciones
-              await this.updateRides(rides);
-              // 3. Asigna a this.rides después que todo esté listo
-              this.rides = rides;
-              for (let i = 0; i < rides.length; i++) {
-                this.totalEarning += rides[i].fare;
-              }
-              // 4. Actualiza lastDoc
-              this.lastDoc = rides[rides.length - 1][
-                '__snapshot__'
-              ] as QueryDocumentSnapshot<DocumentData>; // ✅ Asegurar el tipo correcto
-              resolve();
-            } else {
-              reject('No rides found');
-            }
-          },
-          (error) => {
-            reject(error);
-          }
+  private async fetchHistoryPage(
+    userId: string,
+    cursor: QueryDocumentSnapshot<DocumentData> | null,
+    date?: Date
+  ): Promise<{
+    rides: HistoryRide[];
+    lastDoc: QueryDocumentSnapshot<DocumentData> | null;
+    hasMore: boolean;
+    total: number;
+  }> {
+    const source$ = date
+      ? this.api.getRideHistoryPaginatedByDate(
+          userId,
+          date,
+          'createdAt',
+          this.pageSize,
+          cursor
+        )
+      : this.api.getRideHistoryPaginated(
+          userId,
+          'createdAt',
+          this.pageSize,
+          cursor
         );
-    });
+
+    const page = await firstValueFrom(source$);
+    if (!page || page.length === 0) {
+      return {
+        rides: [],
+        lastDoc: cursor,
+        hasMore: false,
+        total: 0,
+      };
+    }
+
+    const converted = this.util.latLngConverterSQL(page);
+    await this.updateRides(converted);
+
+    const total = converted.reduce(
+      (sum, ride) => sum + Number(ride.totalFare || 0),
+      0
+    );
+
+    const lastSnapshot =
+      (page[page.length - 1]['__snapshot__'] as QueryDocumentSnapshot<DocumentData>) ||
+      null;
+
+    const hasMore = page.length === this.pageSize && !!lastSnapshot;
+
+    return {
+      rides: converted,
+      lastDoc: lastSnapshot ?? cursor,
+      hasMore,
+      total,
+    };
+  }
+
+  private async fetchAllHistory(
+    userId: string,
+    date?: Date
+  ): Promise<{
+    rides: HistoryRide[];
+    lastDoc: QueryDocumentSnapshot<DocumentData> | null;
+    totalEarning: number;
+    hasMore: boolean;
+  }> {
+    let cursor: QueryDocumentSnapshot<DocumentData> | null = null;
+    let aggregated: HistoryRide[] = [];
+    let total = 0;
+    let hasMore = false;
+
+    while (true) {
+      const { rides, lastDoc, hasMore: pageHasMore, total: pageTotal } =
+        await this.fetchHistoryPage(userId, cursor, date);
+
+      if (!rides.length) {
+        hasMore = false;
+        cursor = lastDoc;
+        break;
+      }
+
+      aggregated = this.mergeRidesById(aggregated, rides);
+      total += pageTotal;
+      cursor = lastDoc;
+
+      if (!pageHasMore) {
+        hasMore = false;
+        break;
+      }
+
+      hasMore = true;
+    }
+
+    return {
+      rides: aggregated,
+      lastDoc: cursor,
+      totalEarning: total,
+      hasMore,
+    };
   }
 
 
 
   async loadMore(event: any) {
-    if (this.loadingMore) return;
+    if (this.loadingMore) {
+      event.target.complete();
+      return;
+    }
+
+    if (!this.hasMoreResults || !this.lastDoc) {
+      event.target.disabled = true;
+      event.target.complete();
+      return;
+    }
+
     this.loadingMore = true;
 
     try {
-      const moreRides = await firstValueFrom(
-        this.api.getRideHistoryPaginated(
-          this.userId,
-          'createdAt',
-          this.pageSize,
-          this.lastDoc
-        )
+      const { rides, lastDoc, hasMore, total } = await this.fetchHistoryPage(
+        this.userId,
+        this.lastDoc
       );
 
-      if (moreRides && moreRides.length > 0) {
-        // 🔸 Actualiza direcciones antes de asignar
-        await this.updateRides(moreRides);
-
-        this.rides = [...this.rides, ...moreRides];
-        this.lastDoc = moreRides[moreRides.length - 1][
-          '__snapshot__'
-        ] as QueryDocumentSnapshot<DocumentData>; // ✅ Asegurar el tipo correcto
-      } else {
+      if (!rides.length) {
         event.target.disabled = true;
+      } else {
+        this.rides = this.mergeRidesById(this.rides, rides);
+        this.totalEarning += total;
+        this.lastDoc = lastDoc;
+        this.hasMoreResults = hasMore;
+        if (!hasMore) {
+          event.target.disabled = true;
+        }
       }
-
-      event.target.complete();
     } catch (error) {
       console.error('Error loading more rides:', error);
     }
 
+    event.target.complete();
     this.loadingMore = false;
   }
 
   /** Update Rides with Address Info */
   async updateRides(rides: HistoryRide[]) {
-    for (const ride of rides) {
+    console.log(`🗺️ Updating addresses for ${rides.length} rides...`);
+    
+    for (let i = 0; i < rides.length; i++) {
+      const ride = rides[i];
       try {
+        console.log(`🔄 Getting address for ride ${i + 1}/${rides.length}`);
+        
         // Get the origin address using your ride service
         const originPromise = await firstValueFrom(this.ride.getOrigin(ride));
         if (originPromise.results?.length) {
           ride.origin_address = originPromise.results[0].formatted_address;
+          console.log(`✅ Origin address for ride ${i + 1}: ${ride.origin_address}`);
         }
+        
         // Get the destination address using your ride service
         const destinationRes = await firstValueFrom(
           this.ride.getDestination(ride)
@@ -242,11 +339,34 @@ export class Tab2Page implements OnInit {
         if (destinationRes.results?.length) {
           ride.destination_address =
             destinationRes.results[0].formatted_address;
+          console.log(`✅ Destination address for ride ${i + 1}: ${ride.destination_address}`);
         }
       } catch (err) {
-        console.error('Error updating ride addresses:', err);
+        console.error(`❌ Error updating addresses for ride ${i + 1}:`, err);
+        console.error(`❌ Ride data:`, ride);
       }
     }
+    
+    console.log('✅ All ride addresses updated');
+  }
+
+  /** Merge rides ensuring unique IDs */
+  private mergeRidesById(existing: HistoryRide[], incoming: HistoryRide[]): HistoryRide[] {
+    const rideMap = new Map<string, HistoryRide>();
+
+    existing.forEach((ride) => {
+      if (ride?.id) {
+        rideMap.set(ride.id, ride);
+      }
+    });
+
+    incoming.forEach((ride) => {
+      if (ride?.id) {
+        rideMap.set(ride.id, ride);
+      }
+    });
+
+    return Array.from(rideMap.values());
   }
 
   /** Dismiss and Navigate Home */
@@ -270,13 +390,20 @@ export class Tab2Page implements OnInit {
     await detailModal.present();
   }
 
-  async weekChecked(i: any) {
-    console.log('i', i);
-    this.selected = i;
+  async weekChecked(week: any, index: number) {
+    console.log('Week selected:', week);
+    this.selectedIndex = index;
     try {
-      await this.showLoader(); // Para la carga inicial, usamos getHistory que ya aplica el límite
-      await this.getHistoryByDate(this.userId, new Date(new Date().getFullYear(), new Date().getMonth(), i.date));
-      await this.dismissLoader();
+      this.lastDoc = null;
+      this.hasMoreResults = false;
+    if (this.infiniteScroll) {
+      this.infiniteScroll.disabled = true;
+    }
+      await this.showLoader();
+      await this.getHistoryByDate(
+        this.userId,
+        new Date(new Date().getFullYear(), new Date().getMonth(), week.date)
+      );
     } catch (error) {
       console.warn('No rides found o error:', error);
       this.rides = []; // Asegúrate que se vacíe si no hay
@@ -291,6 +418,11 @@ export class Tab2Page implements OnInit {
     this.lastDoc = null; // Reset lastDoc for new query
     this.rides = []; // Clear the rides array
     this.totalEarning = 0; // Reset totalEarning
+    this.hasMoreResults = false;
+    if (this.infiniteScroll) {
+      this.infiniteScroll.disabled = false;
+    }
+    this.selectedIndex = null;
     this.loadHistory(this.userId); // Load the history
   }
 }

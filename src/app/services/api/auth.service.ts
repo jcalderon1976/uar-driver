@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Auth, signOut , signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithPopup, reload,updateEmail,
-         GoogleAuthProvider ,OAuthProvider , sendEmailVerification ,signInWithRedirect , getAuth, getIdToken, getIdTokenResult} from '@angular/fire/auth';
+         GoogleAuthProvider ,OAuthProvider , sendEmailVerification ,signInWithRedirect , getAuth, getIdToken, getIdTokenResult,
+         setPersistence, inMemoryPersistence, browserLocalPersistence } from '@angular/fire/auth';
 import { FirestoreService } from '../api/firestore.service';
 import { Firestore } from '@angular/fire/firestore';
 import { User } from '../../models/user';
@@ -16,10 +17,25 @@ export class AuthService {
   private googleProvider = new GoogleAuthProvider();
 
 
+  private persistenceConfigured = false;
+
   constructor(private auth: Auth ,
               private http: HttpClient,
               private store: FirestoreService  
-  ) {}
+  ) {
+    console.log('🔐 AuthService initialized');
+    console.log('🔥 Firebase Auth instance:', this.auth);
+    
+    if (this.auth && this.auth.app) {
+      console.log('✅ Firebase Auth connected to app:', this.auth.app.name);
+      console.log('📊 Auth Config:', {
+        projectId: this.auth.app.options.projectId,
+        authDomain: this.auth.app.options.authDomain
+      });
+    } else {
+      console.error('❌ Firebase Auth not properly initialized in AuthService!');
+    }
+  }
 
   // ✅ Register a new user
    createAccount(user: User): Promise<any> {
@@ -45,13 +61,83 @@ export class AuthService {
 
   // ✅ Login existing user
   async login(email: string, password: string) {
+    console.log('🔐 Attempting Firebase login for:', email);
+    console.log('🔥 Auth instance available:', !!this.auth);
+    console.log('🌐 Firebase Auth URL:', this.auth.config.apiHost);
+    
+    // Test de conectividad básica
     try {
+      console.log('🌐 Testing internet connectivity...');
+      const testResponse = await fetch('https://www.google.com', { method: 'HEAD', mode: 'no-cors' });
+      console.log('✅ Internet connection OK');
+    } catch (netError) {
+      console.error('❌ No internet connection detected:', netError);
+      console.error('❌ Please check your device network settings');
+    }
+    
+    // Para iOS/Capacitor, usar API REST de Firebase en lugar del SDK
+    const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+    const isCapacitor = window.location.protocol === 'capacitor:';
+    
+    if (isIOS || isCapacitor) {
+      console.log('📱 iOS/Capacitor detected - Using Firebase REST API');
+      return this.loginWithRestAPI(email, password);
+    }
+    
+    // Para web, usar el SDK normal
+    try {
+      console.log('⏳ Web login - Using Firebase SDK...');
       const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
-      
-
+      console.log('✅ Firebase login successful:', userCredential.user.uid);
       return userCredential.user;
-    } catch (error) {
-      console.error('Login Error:', error);
+    } catch (error: any) {
+      console.error('❌ Firebase Auth Login Error:', error);
+      throw error;
+    }
+  }
+
+  // Método alternativo usando REST API de Firebase (para iOS)
+  private async loginWithRestAPI(email: string, password: string): Promise<any> {
+    console.log('🌐 Using Firebase REST API for login...');
+    
+    const apiKey = environment.firebase.apiKey;
+    const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`;
+    
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+          returnSecureToken: true
+        })
+      });
+
+      console.log('📡 Firebase REST API response status:', response.status);
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('❌ Firebase REST API error:', errorData);
+        throw new Error(errorData.error?.message || 'Login failed');
+      }
+
+      const data = await response.json();
+      console.log('✅ Firebase REST API login successful');
+      console.log('✅ User ID:', data.localId);
+      
+      // Crear un objeto similar al user de Firebase SDK
+      return {
+        uid: data.localId,
+        email: data.email,
+        emailVerified: data.emailVerified || false,
+        idToken: data.idToken,
+        refreshToken: data.refreshToken
+      };
+    } catch (error: any) {
+      console.error('❌ Firebase REST API Error:', error);
       throw error;
     }
   }

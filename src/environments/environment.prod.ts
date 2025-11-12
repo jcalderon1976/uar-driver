@@ -13,8 +13,8 @@ export const environment = {
   disableLogin: true,
   COUNTRY: 'PR',
   GOOGLE_MAPS_API_KEY: 'AIzaSyDhMwXI-fZPAh4sQT1cNhvU4extr3lzTmM',
-                       //'AIzaSyBuc0xmVegDEXFCXN6os-rbr8qslPwW-yg',
-  firebase: {  
+    //'AIzaSyBuc0xmVegDEXFCXN6os-rbr8qslPwW-yg',
+    firebase: {  
     apiKey: "AIzaSyCN-au8RKgtZLvJdIYD5IFwiQhXUSaL3n8",
     authDomain: "uar-platform.firebaseapp.com",
     projectId: "uar-platform",
