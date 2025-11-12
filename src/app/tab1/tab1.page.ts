@@ -214,10 +214,7 @@ export class Tab1Page implements OnInit, OnDestroy {
 
   ionViewWillLeave() {
     console.log('🔴 Tab1 - ionViewWillLeave');
-    console.log('🛑 Clearing listeners temporarily (will restart on return if needed)');
-    this.rideService.clearIncomingRideListener();
-    this.rideService.clearRideStatusListener();
-    this.clearOnlineTimer();
+    (document.activeElement as HTMLElement)?.blur();
   }
 
   async cancelRide() {
