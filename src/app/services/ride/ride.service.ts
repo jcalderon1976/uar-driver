@@ -383,7 +383,7 @@ export class RideService {
   setRideStatusListener() {
     this.ridelistenerId = setInterval(() => {
       this.checkRideStatus();
-    }, 7000);
+    }, 10000);
   }
 
   async checkRideStatus() {
@@ -826,6 +826,7 @@ async showRidePopup(ride: any) {
       });
     } else {
       console.log('❌ Ride declined or modal dismissed by the driver');
+      await this.markRideRejected(ride.id);
       this.handleRideDeclined();
     }
   } catch (error) {
@@ -876,6 +877,15 @@ private async getDriverLocationForPopup(): Promise<{ lat: number; lng: number }>
 private handleRideDeclined(): void {
   this.rideStage.rideAccepted = false;
   this.setIncomingRideListener(true);
+}
+
+private async markRideRejected(rideId: string): Promise<void> {
+  try {
+    await firstValueFrom(this.api.setRideRejected(rideId));
+    console.log('🚫 Ride marked as rejected:', rideId);
+  } catch (error) {
+    console.error('❌ Error marking ride as rejected:', error);
+  }
 }
 
 

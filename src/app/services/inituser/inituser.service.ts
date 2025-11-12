@@ -113,10 +113,14 @@ export class InitUserProvider {
 
   async logout(): Promise<any> {
     
-    await this.createNewEmptyUser();
-    await this.api.logout().then(res => {
-            return this.storage.clear();
-    } );
+    await this.api.logout().then(res => { 
+      console.log('>>>>>logout - before storage.clear .........');
+          
+    console.log('>>>>>logout - after storage.clear .........');
+    } ).catch(err => {
+      console.log('>>>>>logout - error storage.clear .........');
+      console.log('>>>>>logout - error storage.clear .........', err);
+    });
   }
 
   async setNewEmail(newEmail: string ) {

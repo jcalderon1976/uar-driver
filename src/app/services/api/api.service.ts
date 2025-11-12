@@ -296,6 +296,8 @@ export class APIService implements OnDestroy {
 }
 
 logout() {
+  console.log('>>>>>logout - before auth.logout .........');
+ 
   return this.auth.logout();
 }
 

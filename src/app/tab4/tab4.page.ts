@@ -12,6 +12,7 @@ import { SettingAccountComponent } from '../components/setting-account/setting-a
 import { CarInfoComponent } from '../components/car-info/car-info.component';
 import { AlertController, NavController } from '@ionic/angular';
 import { PhotoComponent } from '../components/photo/photo.component';
+import { RideService } from '../services/ride/ride.service';
 
 @Component({
   selector: 'app-tab4',
@@ -32,7 +33,8 @@ export class Tab4Page {
     private util: UtilService,
     private api: APIService,
     private router: Router,
-    private navCtrl: NavController
+    private navCtrl: NavController,
+    private rideService: RideService
   ) {
     this.loggedInUser = this.userProvider.getUserData();
     this.image =
@@ -70,6 +72,7 @@ export class Tab4Page {
   }
 
   async logoutAction() {
+    console.log('>>>>>logoutAction');
     const alert = await this.alertController.create({
       header: 'Confirm',
       message: environment.LOGOUT_CONFIRMATION,
@@ -82,7 +85,7 @@ export class Tab4Page {
         {
           text: 'OK',
           handler: () => {
-            console.log('OK clicked');
+            console.log('>>>>>Clicked OK ..........');
             this.logout();
           },
           cssClass: 'alert-button-custom',
@@ -95,14 +98,19 @@ export class Tab4Page {
 
   async logout() {
     try {
+      console.log('>>>>>logout - before clicked button .........');
+      
+      this.rideService.clearIncomingRideListener();
       await this.userProvider.logout();
     } catch (error) {
       console.error('Error during logout:', error);
     } finally {
+      console.log('>>>>>logout - finally .........');
       sessionStorage.clear();
       localStorage.clear();
       console.log('Navegando a login…');
       this.navCtrl.navigateRoot('/login', { replaceUrl: true });
+      console.log('>>>>>logout - finally - after navigate to login .........');
     }
   }
 

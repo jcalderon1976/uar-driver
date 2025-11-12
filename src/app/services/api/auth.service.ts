@@ -7,7 +7,9 @@ import { Firestore } from '@angular/fire/firestore';
 import { User } from '../../models/user';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-
+import { NavController } from '@ionic/angular';
+import { Router } from '@angular/router';
+import { Storage} from '@ionic/storage';
 @Injectable({
   providedIn: 'root'
 })
@@ -15,13 +17,14 @@ export class AuthService {
   popupOpen = false; // prevent multiple popups
   private apiUrl = environment.emailApiUrl; //   'http://localhost:3000';
   private googleProvider = new GoogleAuthProvider();
-
-
   private persistenceConfigured = false;
-
+  
   constructor(private auth: Auth ,
               private http: HttpClient,
-              private store: FirestoreService  
+              private store: FirestoreService  ,
+              private navCtrl: NavController,
+              private router: Router,
+              private storage: Storage
   ) {
     console.log('🔐 AuthService initialized');
     console.log('🔥 Firebase Auth instance:', this.auth);
@@ -197,19 +200,17 @@ export class AuthService {
 
   // ✅ Logout
   async logout() {
-
+    console.log('>>>>>logout - before signOut .........');
   //TODO CHECK WHERE IS THE LOG IN ???
     //return this.auth.signOut();
     await signOut(this.auth);
-    //await GoogleAuth.signOut();
-  }
-
-  sendOTP(email: string) {
-    return this.http.post(`${this.apiUrl}/send-otp`, { email });
-  }
-
-  verifyOTP(email: string, otp: string) {
-    return this.http.post(`${this.apiUrl}/verify-otp`, { email, otp });
+    await this.storage.clear();
+    localStorage.clear();
+    sessionStorage.clear();
+    this.router.navigateByUrl('/login', { replaceUrl: true });
+    window.location.replace('/login');
+     console.log('>>>>>logout - after window.location.replace .........');
+    
   }
 
   emailVerification(){
